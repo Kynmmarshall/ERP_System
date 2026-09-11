@@ -6,3 +6,13 @@ export type Invoice = {
   status: 'pending' | 'paid'
   createdAt: string
 }
+
+export type PaymentIntent = {
+  id: string
+  invoiceId: string
+  amountXaf: number
+  provider: string
+  providerReference: string
+  status: 'pending' | 'succeeded' | 'failed'
+  createdAt: string
+}
