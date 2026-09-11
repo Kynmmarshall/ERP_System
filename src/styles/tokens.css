@@ -1,0 +1,24 @@
+:root {
+  color-scheme: dark;
+
+  /* Design tokens: HSL triplets (no hsl() wrapper) so Tailwind's
+     `hsl(var(--x) / <alpha-value>)` pattern can apply opacity. */
+  --color-background: 222 22% 7%;
+  --color-surface: 222 18% 10%;
+  --color-surface-elevated: 222 16% 14%;
+  --color-primary: 189 85% 46%;
+  --color-secondary: 215 14% 60%;
+  --color-accent: 82 68% 55%;
+  --color-text: 210 25% 96%;
+  --color-muted: 215 12% 65%;
+  --color-border: 220 14% 20%;
+  --color-glow: 189 90% 55%;
+  --color-success: 152 60% 45%;
+  --color-warning: 38 92% 55%;
+  --color-error: 0 72% 55%;
+
+  /* System-font stack for now; self-hosted Space Grotesk/Manrope land with
+     the full design system in Phase 2. */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
