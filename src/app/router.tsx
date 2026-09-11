@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 
 import { LoginPage } from '@/features/auth/LoginPage'
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute'
+import { EnrollmentPage } from '@/features/academic/EnrollmentPage'
 import { AppShell } from '@/layouts/AppShell'
 import { OverviewPage } from '@/pages/OverviewPage'
 import { PlaceholderModulePage } from '@/pages/PlaceholderModulePage'
@@ -18,7 +19,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <OverviewPage /> },
-      { path: 'academic', element: <PlaceholderModulePage title="Academic" /> },
+      { path: 'academic', element: <EnrollmentPage /> },
       { path: 'finance', element: <PlaceholderModulePage title="Finance & Marketing" /> },
       { path: 'people', element: <PlaceholderModulePage title="People & Operations" /> },
       { path: 'settings', element: <PlaceholderModulePage title="Settings" /> },
