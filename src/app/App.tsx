@@ -1,7 +1,12 @@
-import { SystemStatusPage } from '@/pages/SystemStatusPage'
+import { RouterProvider } from 'react-router-dom'
+
+import { router } from '@/app/router'
+import { AuthProvider } from '@/features/auth/AuthContext'
 
 export function App() {
-  // Router/AppShell/auth land in Phase 2. Phase 1 proves the frontend can
-  // make a real, working request through the gateway to every service.
-  return <SystemStatusPage />
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  )
 }

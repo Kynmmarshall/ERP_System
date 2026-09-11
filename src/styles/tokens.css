@@ -17,8 +17,8 @@
   --color-warning: 38 92% 55%;
   --color-error: 0 72% 55%;
 
-  /* System-font stack for now; self-hosted Space Grotesk/Manrope land with
-     the full design system in Phase 2. */
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  /* Space Grotesk for headings, Manrope for body/UI text - both self-hosted
+     via @fontsource (see globals.css), never a third-party font CDN. */
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', var(--font-sans);
 }
