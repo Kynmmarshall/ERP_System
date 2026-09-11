@@ -32,6 +32,13 @@ npm run build
 ## Status
 
 Phase 1 (foundation): toolchain, design tokens, and a real system-status page
-that calls the gateway and every backend service's health endpoint. The full
-navigation shell, authentication and feature modules land in later phases —
-see `../ERP_System_backend/docs/` (added progressively) for the full plan.
+that calls the gateway and every backend service's health endpoint.
+
+Phase 2 (auth + app shell): self-hosted Space Grotesk/Manrope, an
+`AuthContext` with in-memory access tokens and transparent refresh-cookie
+rotation, a real login page, protected routing, and a responsive
+sidebar/topbar shell (Overview, Academic, Finance & Marketing, People &
+Operations, System Status, Settings). Log in at `/login` with a seeded dev
+account from `../ERP_System_backend/readme.md`. Business-module pages are
+intentionally still empty-state placeholders — they land in Phases 4-6. See
+`../ERP_System_backend/docs/` (added progressively) for the full plan.

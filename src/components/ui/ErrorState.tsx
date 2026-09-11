@@ -1,4 +1,5 @@
 import { AlertTriangle } from 'lucide-react'
+import type { ReactNode } from 'react'
 
 export function ErrorState({
   title = 'Something went wrong',
@@ -7,7 +8,7 @@ export function ErrorState({
 }: {
   title?: string
   message: string
-  action?: React.ReactNode
+  action?: ReactNode
 }) {
   return (
     <div

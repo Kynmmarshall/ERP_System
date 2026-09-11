@@ -1,5 +1,5 @@
 import { motion, useReducedMotion, type HTMLMotionProps } from 'motion/react'
-import { forwardRef } from 'react'
+import { forwardRef, type ReactNode } from 'react'
 
 type Variant = 'primary' | 'secondary' | 'ghost'
 type Size = 'sm' | 'md'
@@ -16,10 +16,11 @@ const SIZE_CLASSES: Record<Size, string> = {
   md: 'h-11 px-5 text-sm',
 }
 
-type ButtonProps = HTMLMotionProps<'button'> & {
+type ButtonProps = Omit<HTMLMotionProps<'button'>, 'children'> & {
   variant?: Variant
   size?: Size
   isLoading?: boolean
+  children?: ReactNode
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
