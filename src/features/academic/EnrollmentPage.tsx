@@ -10,6 +10,7 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { FormField } from '@/components/ui/FormField'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useAuth } from '@/features/auth/AuthContext'
+import { CoursesPanel } from '@/features/academic/CoursesPanel'
 import {
   createEnrollment,
   fetchEnrollments,
@@ -237,6 +238,10 @@ export function EnrollmentPage() {
           />
         )}
       </div>
+
+      {enrollmentsQuery.data && enrollmentsQuery.data.length > 0 ? (
+        <CoursesPanel enrollments={enrollmentsQuery.data} />
+      ) : null}
     </div>
   )
 }

@@ -20,3 +20,62 @@ export type Enrollment = {
   status: string
   createdAt: string
 }
+
+export type Course = {
+  id: string
+  programId: string
+  code: string
+  name: string
+  credits: number
+}
+
+export type CourseOffering = {
+  id: string
+  courseId: string
+  termId: string
+  instructorId: string
+  room: string
+  capacity: number
+}
+
+export type CourseRegistration = {
+  id: string
+  studentId: string
+  enrollmentId: string
+  courseOfferingId: string
+  createdAt: string
+}
+
+export type Assessment = {
+  id: string
+  courseOfferingId: string
+  name: string
+  maxScore: number
+}
+
+export type Grade = {
+  id: string
+  assessmentId: string
+  studentId: string
+  score: number
+  published: boolean
+}
+
+export type GradeAppeal = {
+  id: string
+  gradeId: string
+  studentId: string
+  reason: string
+  status: 'submitted' | 'under_review' | 'accepted' | 'rejected'
+  reviewerNotes: string | null
+  decidedBy: string | null
+  decidedAt: string | null
+}
+
+export type AtRiskStatus = {
+  studentId: string
+  courseOfferingId: string
+  attendanceRate: number | null
+  assessmentAverage: number | null
+  atRisk: boolean
+}

@@ -14,11 +14,22 @@ const mockFetchPrograms = vi.fn()
 const mockFetchTerms = vi.fn()
 const mockFetchEnrollments = vi.fn()
 const mockCreateEnrollment = vi.fn()
+const mockFetchCourses = vi.fn()
+const mockFetchCourseOfferings = vi.fn()
+const mockFetchMyCourseRegistrations = vi.fn()
+const mockFetchMyAtRiskStatus = vi.fn()
 vi.mock('@/services/academicService', () => ({
   fetchPrograms: () => mockFetchPrograms(),
   fetchTerms: () => mockFetchTerms(),
   fetchEnrollments: () => mockFetchEnrollments(),
   createEnrollment: (input: unknown) => mockCreateEnrollment(input),
+  fetchCourses: () => mockFetchCourses(),
+  fetchCourseOfferings: () => mockFetchCourseOfferings(),
+  fetchMyCourseRegistrations: () => mockFetchMyCourseRegistrations(),
+  fetchMyAtRiskStatus: () => mockFetchMyAtRiskStatus(),
+  registerForCourse: vi.fn(),
+  downloadTranscript: vi.fn(),
+  downloadAttendanceSummary: vi.fn(),
 }))
 
 const mockFetchInvoiceForEnrollment = vi.fn()
@@ -54,6 +65,10 @@ describe('EnrollmentPage', () => {
     ])
     mockFetchEnrollments.mockResolvedValue([])
     mockFetchInvoiceForEnrollment.mockResolvedValue(null)
+    mockFetchCourses.mockResolvedValue([])
+    mockFetchCourseOfferings.mockResolvedValue([])
+    mockFetchMyCourseRegistrations.mockResolvedValue([])
+    mockFetchMyAtRiskStatus.mockResolvedValue([])
   })
 
   it('shows a placeholder for non-student roles', async () => {
