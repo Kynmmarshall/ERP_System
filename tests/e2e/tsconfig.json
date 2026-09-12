@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -10,7 +10,7 @@
     "moduleDetection": "force",
     "noEmit": true,
     "strict": true,
-    "types": ["node"]
+    "types": ["@playwright/test", "node"]
   },
-  "include": ["vite.config.ts"]
+  "include": ["**/*.ts", "../../playwright.config.ts"]
 }
