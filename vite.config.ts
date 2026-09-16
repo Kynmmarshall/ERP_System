@@ -14,7 +14,7 @@ export default defineConfig({
       // Lets `npm run dev` make real requests to the gateway without CORS,
       // mirroring how the built app talks to it in Docker/production.
       '/api': {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:2022',
         changeOrigin: true,
       },
     },
