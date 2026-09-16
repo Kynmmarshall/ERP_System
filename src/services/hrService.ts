@@ -16,6 +16,7 @@ import type {
   Payslip,
   PerformanceReview,
   Position,
+  PositionStatus,
   RunPayslip,
   Shift,
   ShiftQrToken,
@@ -159,7 +160,7 @@ type PositionResponse = {
   id: string
   title: string
   department: string
-  status: string
+  status: PositionStatus
   created_at: string
 }
 
@@ -267,6 +268,13 @@ export async function createPosition(input: { title: string; department: string 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ title: input.title, department: input.department }),
   })
+}
+
+export async function closePosition(positionId: string): Promise<void> {
+  await authFetchJson<PositionResponse>(
+    `/api/v1/hr/positions/${encodeURIComponent(positionId)}/close`,
+    { method: 'POST' },
+  )
 }
 
 export async function fetchCandidates(): Promise<Candidate[]> {

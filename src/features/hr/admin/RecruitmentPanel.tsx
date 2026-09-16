@@ -8,6 +8,7 @@ import { FormField } from '@/components/ui/FormField'
 import { Input } from '@/components/ui/Input'
 import { Skeleton } from '@/components/ui/Skeleton'
 import {
+  closePosition,
   createCandidate,
   createPosition,
   fetchCandidates,
@@ -174,7 +175,10 @@ function NewCandidateForm({ positions }: { positions: { id: string; title: strin
   if (positions.length === 0) {
     return (
       <div className="mt-4">
-        <EmptyState title="Open a position first" message="Candidates must be attached to a position." />
+        <EmptyState
+          title="No open positions"
+          message="Candidates attach to an open position, so open one above first."
+        />
       </div>
     )
   }
@@ -236,9 +240,19 @@ export function RecruitmentPanel() {
   const queryClient = useQueryClient()
   const [hiring, setHiring] = useState<string | null>(null)
   const [stageError, setStageError] = useState<string | null>(null)
+  const [closeError, setCloseError] = useState<string | null>(null)
 
   const positionsQuery = useQuery({ queryKey: ['hr', 'positions'], queryFn: fetchPositions })
   const candidatesQuery = useQuery({ queryKey: ['hr', 'candidates'], queryFn: fetchCandidates })
+
+  const closeMutation = useMutation({
+    mutationFn: (positionId: string) => closePosition(positionId),
+    onSuccess: async () => {
+      setCloseError(null)
+      await queryClient.invalidateQueries({ queryKey: ['hr', 'positions'] })
+    },
+    onError: (err) => setCloseError(err instanceof Error ? err.message : 'Could not close position'),
+  })
 
   const stageMutation = useMutation({
     mutationFn: ({ id, stage }: { id: string; stage: CandidateStage }) => updateCandidateStage(id, stage),
@@ -260,6 +274,15 @@ export function RecruitmentPanel() {
 
       <section className="mt-10">
         <h2 className="text-sm font-medium text-text">Positions</h2>
+        <p className="mt-1 text-sm text-muted">
+          Closing a position stops new candidates being added to it. Anyone already in the pipeline
+          keeps their stage and can still be hired.
+        </p>
+        {closeError ? (
+          <p role="alert" className="mt-2 text-xs text-error">
+            {closeError}
+          </p>
+        ) : null}
         {positionsQuery.isPending ? (
           <div className="mt-4">
             <Skeleton className="h-16 w-full" />
@@ -278,8 +301,19 @@ export function RecruitmentPanel() {
               <li key={position.id} className="rounded-lg border border-border bg-surface-elevated p-3">
                 <p className="text-sm font-medium text-text">{position.title}</p>
                 <p className="mt-0.5 text-sm text-muted">
-                  {position.department} · {position.status}
+                  {position.department} · {position.status === 'open' ? 'Open' : 'Closed'}
                 </p>
+                {position.status === 'open' ? (
+                  <Button
+                    className="mt-2"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => closeMutation.mutate(position.id)}
+                    isLoading={closeMutation.isPending && closeMutation.variables === position.id}
+                  >
+                    Close position
+                  </Button>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -288,7 +322,9 @@ export function RecruitmentPanel() {
 
       <section className="mt-10">
         <h2 className="text-sm font-medium text-text">Add a candidate</h2>
-        <NewCandidateForm positions={positionsQuery.data ?? []} />
+        <NewCandidateForm
+          positions={(positionsQuery.data ?? []).filter((position) => position.status === 'open')}
+        />
       </section>
 
       <section className="mt-10">

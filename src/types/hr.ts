@@ -42,11 +42,13 @@ export type Employee = {
   status: string
 }
 
+export type PositionStatus = 'open' | 'closed'
+
 export type Position = {
   id: string
   title: string
   department: string
-  status: string
+  status: PositionStatus
   createdAt: string
 }
 
