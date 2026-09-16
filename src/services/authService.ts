@@ -6,7 +6,21 @@ type AccessTokenResponse = {
   access_token: string
   token_type: string
   expires_in_seconds: number
+  mfa_required?: boolean
 }
+
+type MfaChallengeResponse = {
+  mfa_required: true
+  challenge_id: string
+  expires_in_seconds: number
+}
+
+/** Admin/super_admin logins complete in two steps, so login() resolves to
+ * either a finished session or a pending challenge - never a token the
+ * caller has to guess the meaning of. */
+export type LoginResult =
+  | { status: 'authenticated'; principal: Principal }
+  | { status: 'mfa_required'; challengeId: string; expiresInSeconds: number }
 
 type MeResponse = {
   id: string
@@ -28,7 +42,7 @@ function toPrincipal(body: MeResponse): Principal {
   }
 }
 
-export async function login(email: string, password: string): Promise<Principal> {
+export async function login(email: string, password: string): Promise<LoginResult> {
   const response = await fetch('/api/v1/auth/login', {
     method: 'POST',
     credentials: 'include',
@@ -39,6 +53,54 @@ export async function login(email: string, password: string): Promise<Principal>
   if (!response.ok) {
     const message =
       body && typeof body === 'object' && 'detail' in body ? String(body.detail) : 'Login failed'
+    throw new Error(message)
+  }
+
+  if (body && typeof body === 'object' && (body as MfaChallengeResponse).mfa_required === true) {
+    const challenge = body as MfaChallengeResponse
+    return {
+      status: 'mfa_required',
+      challengeId: challenge.challenge_id,
+      expiresInSeconds: challenge.expires_in_seconds,
+    }
+  }
+
+  const token = body as AccessTokenResponse
+  setAccessToken(token.access_token)
+  return { status: 'authenticated', principal: await fetchMe() }
+}
+
+export async function verifyMfa(challengeId: string, code: string): Promise<Principal> {
+  const response = await fetch('/api/v1/auth/mfa/verify', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ challenge_id: challengeId, code }),
+  })
+  const body = await response.json().catch(() => null)
+  if (!response.ok) {
+    const message =
+      body && typeof body === 'object' && 'detail' in body
+        ? String(body.detail)
+        : 'Invalid or expired code'
+    throw new Error(message)
+  }
+  const token = body as AccessTokenResponse
+  setAccessToken(token.access_token)
+  return fetchMe()
+}
+
+export async function register(email: string, password: string, fullName: string): Promise<Principal> {
+  const response = await fetch('/api/v1/auth/register', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, full_name: fullName }),
+  })
+  const body = await response.json().catch(() => null)
+  if (!response.ok) {
+    const message =
+      body && typeof body === 'object' && 'detail' in body ? String(body.detail) : 'Registration failed'
     throw new Error(message)
   }
   const token = body as AccessTokenResponse

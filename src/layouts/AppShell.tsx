@@ -13,20 +13,27 @@ import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { useAuth } from '@/features/auth/AuthContext'
+import { ADMIN_ROLES, ROLE_LABELS, ROLES, STAFF_ROLES, hasRole } from '@/features/auth/roles'
+import type { Role } from '@/types/auth'
 
-const NAV_ITEMS = [
-  { to: '/', label: 'Overview', icon: LayoutDashboard, end: true },
-  { to: '/academic', label: 'Academic', icon: GraduationCap },
-  { to: '/finance', label: 'Finance & Marketing', icon: BarChart3 },
-  { to: '/people', label: 'People & Operations', icon: Users },
-  { to: '/status', label: 'System Status', icon: Building2 },
-  { to: '/settings', label: 'Settings', icon: Settings },
+// `roles` mirrors the route guards in app/router.tsx. Hiding a link is UX
+// only - the route guard and the API both re-check independently.
+const NAV_ITEMS: { to: string; label: string; icon: typeof LayoutDashboard; end?: boolean; roles: readonly Role[] }[] = [
+  { to: '/', label: 'Overview', icon: LayoutDashboard, end: true, roles: ROLES },
+  { to: '/academic', label: 'Academic', icon: GraduationCap, roles: ROLES },
+  { to: '/finance', label: 'Finance & Marketing', icon: BarChart3, roles: ROLES },
+  { to: '/people', label: 'People & Operations', icon: Users, roles: STAFF_ROLES },
+  { to: '/status', label: 'System Status', icon: Building2, roles: ROLES },
+  { to: '/settings', label: 'Settings', icon: Settings, roles: ADMIN_ROLES },
 ]
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  const { principal } = useAuth()
+  const items = NAV_ITEMS.filter((item) => hasRole(principal?.role, item.roles))
+
   return (
     <nav className="flex flex-col gap-1" aria-label="Primary">
-      {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+      {items.map(({ to, label, icon: Icon, end }) => (
         <NavLink
           key={to}
           to={to}
@@ -108,7 +115,9 @@ export function AppShell() {
           <div className="flex items-center justify-between rounded-md border border-border px-3 py-2">
             <div className="min-w-0">
               <p className="truncate text-sm font-medium text-text">{principal?.fullName}</p>
-              <p className="truncate text-xs text-muted">{principal?.role}</p>
+              <p className="truncate text-xs text-muted">
+                {principal?.role ? ROLE_LABELS[principal.role] : null}
+              </p>
             </div>
             <button
               type="button"

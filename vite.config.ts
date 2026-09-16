@@ -24,6 +24,9 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    // tests/e2e are Playwright specs - vitest cannot run them and errors out
+    // if it collects them.
+    exclude: ['node_modules/**', 'dist/**', 'tests/e2e/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],

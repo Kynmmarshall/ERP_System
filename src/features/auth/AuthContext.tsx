@@ -9,7 +9,14 @@ import {
 } from 'react'
 
 import { registerSessionExpiredHandler, refreshAccessToken } from '@/services/apiClient'
-import { fetchMe, login as loginRequest, logout as logoutRequest } from '@/services/authService'
+import {
+  fetchMe,
+  login as loginRequest,
+  logout as logoutRequest,
+  register as registerRequest,
+  verifyMfa as verifyMfaRequest,
+  type LoginResult,
+} from '@/services/authService'
 import type { Principal } from '@/types/auth'
 
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
@@ -17,7 +24,9 @@ type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
 type AuthContextValue = {
   status: AuthStatus
   principal: Principal | null
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<LoginResult>
+  verifyMfa: (challengeId: string, code: string) => Promise<void>
+  register: (email: string, password: string, fullName: string) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -62,7 +71,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = useCallback(async (email: string, password: string) => {
-    const me = await loginRequest(email, password)
+    const result = await loginRequest(email, password)
+    // A pending MFA challenge is NOT a session - state stays unauthenticated
+    // until the second factor actually succeeds.
+    if (result.status === 'authenticated') {
+      setPrincipal(result.principal)
+      setStatus('authenticated')
+    }
+    return result
+  }, [])
+
+  const verifyMfa = useCallback(async (challengeId: string, code: string) => {
+    const me = await verifyMfaRequest(challengeId, code)
+    setPrincipal(me)
+    setStatus('authenticated')
+  }, [])
+
+  const register = useCallback(async (email: string, password: string, fullName: string) => {
+    const me = await registerRequest(email, password, fullName)
     setPrincipal(me)
     setStatus('authenticated')
   }, [])
@@ -74,8 +100,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo<AuthContextValue>(
-    () => ({ status, principal, login, logout }),
-    [status, principal, login, logout],
+    () => ({ status, principal, login, verifyMfa, register, logout }),
+    [status, principal, login, verifyMfa, register, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
