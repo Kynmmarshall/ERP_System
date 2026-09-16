@@ -71,7 +71,7 @@ describe('EnrollmentPage', () => {
   })
 
   it('shows the teaching workspace, not the student enrollment form, for staff', async () => {
-    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, role: 'staff' } })
+    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, role: 'lecturer' } })
 
     renderPage()
 

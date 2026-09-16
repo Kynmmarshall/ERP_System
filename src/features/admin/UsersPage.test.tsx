@@ -130,7 +130,7 @@ describe('UsersPage', () => {
 
     await user.selectOptions(
       screen.getByLabelText('Role', { selector: `#role-${OTHER_USER_ID}` }),
-      'staff',
+      'lecturer',
     )
 
     await waitFor(() =>

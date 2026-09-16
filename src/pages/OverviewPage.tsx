@@ -1,4 +1,4 @@
-import { BarChart3, GraduationCap, Settings, ShieldCheck, Users } from 'lucide-react'
+import { BarChart3, GraduationCap, Megaphone, Settings, ShieldCheck, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { useAuth } from '@/features/auth/AuthContext'
@@ -26,7 +26,7 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
       icon: BarChart3,
     },
   ],
-  staff: [
+  lecturer: [
     {
       to: '/academic',
       label: 'My teaching',
@@ -34,10 +34,32 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
       icon: GraduationCap,
     },
     {
+      to: '/people',
+      label: 'My workplace',
+      description: 'Leave requests, shift attendance, payslips and notifications.',
+      icon: Users,
+    },
+  ],
+  finance_staff: [
+    {
       to: '/finance',
-      label: 'Finance & marketing',
-      description: 'Record expenses, track the ledger and run admissions campaigns.',
+      label: 'Finance',
+      description: 'Invoices, expenses, the general ledger, fee schedules and monthly reports.',
       icon: BarChart3,
+    },
+    {
+      to: '/people',
+      label: 'My workplace',
+      description: 'Leave requests, shift attendance, payslips and notifications.',
+      icon: Users,
+    },
+  ],
+  marketing: [
+    {
+      to: '/marketing',
+      label: 'Campaigns',
+      description: 'Admissions campaigns, the leads they bring in and return on spend.',
+      icon: Megaphone,
     },
     {
       to: '/people',
@@ -50,7 +72,7 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
     {
       to: '/settings',
       label: 'User access',
-      description: 'Grant or revoke Staff and Admin access for your institution.',
+      description: 'Grant or revoke Lecturer, Finance, Marketing and Admin access.',
       icon: Settings,
     },
     {
@@ -61,9 +83,15 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
     },
     {
       to: '/finance',
-      label: 'Finance & marketing',
-      description: 'Ledger, expenses, monthly summaries, fee schedules and campaign ROI.',
+      label: 'Finance',
+      description: 'Ledger, expenses, monthly summaries and fee schedules.',
       icon: BarChart3,
+    },
+    {
+      to: '/marketing',
+      label: 'Marketing',
+      description: 'Campaigns, leads and return on spend.',
+      icon: Megaphone,
     },
     {
       to: '/people',
@@ -99,9 +127,15 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
     },
     {
       to: '/finance',
-      label: 'Finance & marketing',
-      description: 'Ledger, expenses, monthly summaries, fee schedules and campaign ROI.',
+      label: 'Finance',
+      description: 'Ledger, expenses, monthly summaries and fee schedules.',
       icon: BarChart3,
+    },
+    {
+      to: '/marketing',
+      label: 'Marketing',
+      description: 'Campaigns, leads and return on spend.',
+      icon: Megaphone,
     },
     {
       to: '/status',

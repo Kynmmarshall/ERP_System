@@ -37,7 +37,7 @@ const staffPrincipal = {
   id: 'staff-1',
   email: 'staff@example.com',
   fullName: 'Test Staff',
-  role: 'staff' as const,
+  role: 'lecturer' as const,
   institutionId: 'inst-1',
   campusId: null,
 }

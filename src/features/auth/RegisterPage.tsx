@@ -14,15 +14,17 @@ import type { Role } from '@/types/auth'
 
 const DASHBOARD_BLURBS: Partial<Record<Role, string>> = {
   student: 'Enrol in courses, track results and pay tuition.',
-  staff: 'Teach, grade, and work in finance and marketing.',
-  admin: 'Run academic, finance, people and system administration.',
+  lecturer: 'Teach: grading, attendance, exams and the course catalogue.',
+  finance_staff: 'Invoices, expenses, the ledger and monthly reports.',
+  marketing: 'Admissions campaigns, leads and return on spend.',
+  admin: 'Run academic, finance, marketing, people and system administration.',
 }
 
 const registerSchema = z.object({
   fullName: z.string().min(1, 'Full name is required'),
   email: z.string().min(1, 'Email is required').email('Enter a valid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  requestedRole: z.enum(['student', 'staff', 'admin']),
+  requestedRole: z.enum(['student', 'lecturer', 'finance_staff', 'marketing', 'admin']),
   justification: z.string().max(500).optional(),
 })
 

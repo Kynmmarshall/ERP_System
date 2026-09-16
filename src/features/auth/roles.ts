@@ -3,18 +3,18 @@ import type { Role } from '@/types/auth'
 export const ROLES: readonly Role[] = [
   'super_admin',
   'admin',
-  'staff',
   'lecturer',
   'finance_staff',
+  'marketing',
   'student',
 ] as const
 
 export const ROLE_LABELS: Record<Role, string> = {
   super_admin: 'Super Admin',
   admin: 'Admin',
-  staff: 'Staff (all areas)',
   lecturer: 'Lecturer',
   finance_staff: 'Finance Staff',
+  marketing: 'Marketing',
   student: 'Student',
 }
 
@@ -26,23 +26,21 @@ export const ADMIN_ROLES: readonly Role[] = ['admin', 'super_admin'] as const
 
 /** Anyone employed by the university - the band HR self-service uses. */
 export const STAFF_ROLES: readonly Role[] = [
-  'staff',
   'lecturer',
   'finance_staff',
+  'marketing',
   'admin',
   'super_admin',
 ] as const
 
 /** Teaching: grading, attendance, the course catalogue and exam timetable. */
-export const TEACHING_ROLES: readonly Role[] = ['staff', 'lecturer', 'admin', 'super_admin'] as const
+export const TEACHING_ROLES: readonly Role[] = ['lecturer', 'admin', 'super_admin'] as const
 
-/** Money: expenses, ledger, campaigns, fee schedules. */
-export const FINANCE_ROLES: readonly Role[] = [
-  'staff',
-  'finance_staff',
-  'admin',
-  'super_admin',
-] as const
+/** Money: invoices, expenses, ledger, monthly summaries, fee schedules. */
+export const FINANCE_ROLES: readonly Role[] = ['finance_staff', 'admin', 'super_admin'] as const
+
+/** Campaigns, leads and ROI. */
+export const MARKETING_ROLES: readonly Role[] = ['marketing', 'admin', 'super_admin'] as const
 
 /** Who may open /academic at all - students get their own view there. */
 export const ACADEMIC_PAGE_ROLES: readonly Role[] = ['student', ...TEACHING_ROLES] as const
@@ -57,6 +55,7 @@ export const REQUESTABLE_ROLES: readonly Role[] = [
   'student',
   'lecturer',
   'finance_staff',
+  'marketing',
   'admin',
 ] as const
 

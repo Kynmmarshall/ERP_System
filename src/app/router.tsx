@@ -4,9 +4,16 @@ import { LoginPage } from '@/features/auth/LoginPage'
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute'
 import { RegisterPage } from '@/features/auth/RegisterPage'
 import { RequireRole } from '@/features/auth/RequireRole'
-import { ADMIN_ROLES, STAFF_ROLES } from '@/features/auth/roles'
+import {
+  ACADEMIC_PAGE_ROLES,
+  ADMIN_ROLES,
+  FINANCE_PAGE_ROLES,
+  MARKETING_ROLES,
+  STAFF_ROLES,
+} from '@/features/auth/roles'
 import { EnrollmentPage } from '@/features/academic/EnrollmentPage'
 import { FinancePage } from '@/features/finance/FinancePage'
+import { MarketingPage } from '@/features/marketing/MarketingPage'
 import { HRPage } from '@/features/hr/HRPage'
 import { UsersPage } from '@/features/admin/UsersPage'
 import { AppShell } from '@/layouts/AppShell'
@@ -42,6 +49,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireRole allowed={FINANCE_PAGE_ROLES}>
             <FinancePage />
+          </RequireRole>
+        ),
+      },
+      {
+        path: 'marketing',
+        element: (
+          <RequireRole allowed={MARKETING_ROLES}>
+            <MarketingPage />
           </RequireRole>
         ),
       },

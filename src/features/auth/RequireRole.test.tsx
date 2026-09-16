@@ -68,7 +68,7 @@ describe('RequireRole', () => {
   })
 
   it('denies staff access to an admin-only area', async () => {
-    stubSessionAs('staff')
+    stubSessionAs('lecturer')
     renderGuarded(ADMIN_ROLES)
 
     expect(await screen.findByRole('alert')).toBeInTheDocument()
@@ -90,7 +90,7 @@ describe('RequireRole', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
 
-  it.each(['staff', 'admin', 'super_admin'] as const)(
+  it.each(['lecturer', 'admin', 'super_admin'] as const)(
     'allows %s into a staff-only area',
     async (role) => {
       stubSessionAs(role)

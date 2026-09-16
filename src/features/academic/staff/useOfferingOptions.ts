@@ -25,7 +25,7 @@ export function useOfferingOptions() {
   const visibleOfferings =
     isPending || isError
       ? []
-      : principal?.role === 'staff'
+      : principal?.role === 'lecturer'
         ? offeringsQuery.data.filter((offering) => offering.instructorId === principal.id)
         : offeringsQuery.data
 

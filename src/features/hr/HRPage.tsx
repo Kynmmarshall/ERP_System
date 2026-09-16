@@ -1,4 +1,5 @@
 import { useAuth } from '@/features/auth/AuthContext'
+import { ADMIN_ROLES, hasRole } from '@/features/auth/roles'
 import { AttendanceSection } from '@/features/hr/AttendanceSection'
 import { LeaveSection } from '@/features/hr/LeaveSection'
 import { NotificationsSection } from '@/features/hr/NotificationsSection'
@@ -8,7 +9,9 @@ import { AdminHRPage } from '@/features/hr/admin/AdminHRPage'
 export function HRPage() {
   const { principal } = useAuth()
 
-  if (principal?.role !== 'staff') {
+  // Admins get the management workspace; every other employee role gets
+  // their own self-service view.
+  if (hasRole(principal?.role, ADMIN_ROLES)) {
     return <AdminHRPage />
   }
 

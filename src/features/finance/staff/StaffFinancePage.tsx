@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { CampaignsPanel } from '@/features/finance/staff/CampaignsPanel'
 import { ExpensesPanel } from '@/features/finance/staff/ExpensesPanel'
 import { FinanceSettingsPanel } from '@/features/finance/staff/FinanceSettingsPanel'
 import { FinancialOverviewPanel } from '@/features/finance/staff/FinancialOverviewPanel'
@@ -8,7 +7,6 @@ import { FinancialOverviewPanel } from '@/features/finance/staff/FinancialOvervi
 const TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'expenses', label: 'Expenses' },
-  { id: 'campaigns', label: 'Marketing' },
   { id: 'settings', label: 'Fees & reports' },
 ] as const
 
@@ -51,7 +49,6 @@ export function StaffFinancePage() {
       >
         {tab === 'overview' ? <FinancialOverviewPanel /> : null}
         {tab === 'expenses' ? <ExpensesPanel /> : null}
-        {tab === 'campaigns' ? <CampaignsPanel /> : null}
         {tab === 'settings' ? <FinanceSettingsPanel /> : null}
       </div>
     </div>

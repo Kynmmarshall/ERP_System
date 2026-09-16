@@ -1,9 +1,9 @@
 export type Role =
   | 'super_admin'
   | 'admin'
-  | 'staff'
   | 'lecturer'
   | 'finance_staff'
+  | 'marketing'
   | 'student'
 
 export type Principal = {
