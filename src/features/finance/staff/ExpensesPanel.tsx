@@ -7,7 +7,7 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { FormField } from '@/components/ui/FormField'
 import { Input } from '@/components/ui/Input'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { formatXaf } from '@/features/finance/staff/format'
+import { formatXaf } from '@/lib/currency'
 import { fetchExpenses, recordExpense } from '@/services/financeService'
 
 export function ExpensesPanel() {

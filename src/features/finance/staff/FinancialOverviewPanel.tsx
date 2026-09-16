@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ErrorState } from '@/components/ui/ErrorState'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { formatXaf } from '@/features/finance/staff/format'
+import { formatXaf } from '@/lib/currency'
 import { fetchLedgerEntries, fetchSummaries } from '@/services/financeService'
 
 function SummaryCard({ label, value, tone }: { label: string; value: string; tone?: 'good' | 'bad' }) {

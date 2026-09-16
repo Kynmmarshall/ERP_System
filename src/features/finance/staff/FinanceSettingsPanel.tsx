@@ -7,6 +7,7 @@ import { FormField } from '@/components/ui/FormField'
 import { Input } from '@/components/ui/Input'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useAuth } from '@/features/auth/AuthContext'
+import { ADMIN_ROLES, hasRole } from '@/features/auth/roles'
 import { fetchPrograms, fetchTerms } from '@/services/academicService'
 import { createFeeSchedule, regenerateSummary } from '@/services/financeService'
 
@@ -175,7 +176,7 @@ export function FinanceSettingsPanel() {
         </div>
       </section>
 
-      {principal?.role === 'super_admin' ? (
+      {hasRole(principal?.role, ADMIN_ROLES) ? (
         <section className="mt-10">
           <h2 className="text-sm font-medium text-text">Regenerate a monthly summary</h2>
           <p className="mt-1 text-sm text-muted">

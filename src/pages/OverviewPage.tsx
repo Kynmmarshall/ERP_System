@@ -28,6 +28,18 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
   ],
   staff: [
     {
+      to: '/academic',
+      label: 'My teaching',
+      description: 'Grade assessments, take attendance and review at-risk students on your offerings.',
+      icon: GraduationCap,
+    },
+    {
+      to: '/finance',
+      label: 'Finance & marketing',
+      description: 'Record expenses, track the ledger and run admissions campaigns.',
+      icon: BarChart3,
+    },
+    {
       to: '/people',
       label: 'My workplace',
       description: 'Leave requests, shift attendance, payslips and notifications.',
@@ -40,6 +52,18 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
       label: 'User access',
       description: 'Grant or revoke Staff and Admin access for your institution.',
       icon: Settings,
+    },
+    {
+      to: '/academic',
+      label: 'Academic operations',
+      description: 'Course catalogue, offerings, exam timetable, grading and appeals.',
+      icon: GraduationCap,
+    },
+    {
+      to: '/finance',
+      label: 'Finance & marketing',
+      description: 'Ledger, expenses, monthly summaries, fee schedules and campaign ROI.',
+      icon: BarChart3,
     },
     {
       to: '/people',
@@ -66,6 +90,18 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
       label: 'People & operations',
       description: 'Verify payroll rate schedules and release payroll runs.',
       icon: Users,
+    },
+    {
+      to: '/academic',
+      label: 'Academic operations',
+      description: 'Course catalogue, offerings, exam timetable, grading and appeals.',
+      icon: GraduationCap,
+    },
+    {
+      to: '/finance',
+      label: 'Finance & marketing',
+      description: 'Ledger, expenses, monthly summaries, fee schedules and campaign ROI.',
+      icon: BarChart3,
     },
     {
       to: '/status',

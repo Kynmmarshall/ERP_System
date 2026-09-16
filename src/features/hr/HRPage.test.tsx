@@ -17,6 +17,8 @@ const mockCheckIn = vi.fn()
 const mockFetchMyPayslips = vi.fn()
 const mockFetchMyNotifications = vi.fn()
 const mockMarkNotificationRead = vi.fn()
+const mockFetchLeaveRequests = vi.fn()
+const mockFetchEmployees = vi.fn()
 
 vi.mock('@/services/hrService', () => ({
   fetchMyLeaveRequests: () => mockFetchMyLeaveRequests(),
@@ -26,6 +28,9 @@ vi.mock('@/services/hrService', () => ({
   fetchMyPayslips: () => mockFetchMyPayslips(),
   fetchMyNotifications: () => mockFetchMyNotifications(),
   markNotificationRead: (id: string) => mockMarkNotificationRead(id),
+  fetchLeaveRequests: () => mockFetchLeaveRequests(),
+  fetchEmployees: () => mockFetchEmployees(),
+  decideLeaveRequest: vi.fn(),
 }))
 
 const staffPrincipal = {
@@ -54,14 +59,17 @@ describe('HRPage', () => {
     mockFetchMyAttendance.mockResolvedValue([])
     mockFetchMyPayslips.mockResolvedValue([])
     mockFetchMyNotifications.mockResolvedValue([])
+    mockFetchLeaveRequests.mockResolvedValue([])
+    mockFetchEmployees.mockResolvedValue([])
   })
 
-  it('shows a placeholder for non-staff roles', async () => {
+  it('shows the admin workspace for non-staff roles', async () => {
     mockUseAuth.mockReturnValue({ principal: { ...staffPrincipal, role: 'admin' } })
 
     renderPage()
 
-    expect(await screen.findByText('Not built yet')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'People workspace' })).toBeInTheDocument()
+    expect(await screen.findByText('Nothing pending')).toBeInTheDocument()
   })
 
   it('shows empty states for a staff member with no data yet', async () => {
