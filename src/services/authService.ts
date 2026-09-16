@@ -28,7 +28,6 @@ type MeResponse = {
   full_name: string
   role: Role
   institution_id: string | null
-  campus_id: string | null
 }
 
 function toPrincipal(body: MeResponse): Principal {
@@ -38,7 +37,6 @@ function toPrincipal(body: MeResponse): Principal {
     fullName: body.full_name,
     role: body.role,
     institutionId: body.institution_id,
-    campusId: body.campus_id,
   }
 }
 

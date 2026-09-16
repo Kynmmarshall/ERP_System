@@ -123,7 +123,6 @@ export function EnrollmentPage() {
       createEnrollment({
         programId: values.programId,
         termId: values.termId,
-        campusId: principal!.campusId!,
       }),
     onSuccess: async (enrollment) => {
       setJustCreatedId(enrollment.id)
@@ -143,21 +142,6 @@ export function EnrollmentPage() {
 
   if (principal?.role !== 'student') {
     return <StaffAcademicPage />
-  }
-
-  if (!principal.campusId) {
-    return (
-      <div>
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">Academic</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-text">Academic</h1>
-        <div className="mt-8">
-          <ErrorState
-            title="No campus assigned"
-            message="Your account has no campus assigned, so you cannot enroll. Contact an administrator."
-          />
-        </div>
-      </div>
-    )
   }
 
   const programsById = new Map((programsQuery.data ?? []).map((program) => [program.id, program]))

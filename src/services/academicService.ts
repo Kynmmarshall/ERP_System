@@ -21,7 +21,6 @@ type EnrollmentResponse = {
   id: string
   program_id: string
   term_id: string
-  campus_id: string
   student_id: string
   status: string
   created_at: string
@@ -75,7 +74,6 @@ function toEnrollment(body: EnrollmentResponse): Enrollment {
     id: body.id,
     programId: body.program_id,
     termId: body.term_id,
-    campusId: body.campus_id,
     studentId: body.student_id,
     status: body.status,
     createdAt: body.created_at,
@@ -156,7 +154,6 @@ export async function fetchEnrollments(): Promise<Enrollment[]> {
 export async function createEnrollment(input: {
   programId: string
   termId: string
-  campusId: string
 }): Promise<Enrollment> {
   const body = await authFetchJson<EnrollmentResponse>('/api/v1/academic/enrollments', {
     method: 'POST',
@@ -164,7 +161,6 @@ export async function createEnrollment(input: {
     body: JSON.stringify({
       program_id: input.programId,
       term_id: input.termId,
-      campus_id: input.campusId,
     }),
   })
   return toEnrollment(body)

@@ -6,5 +6,4 @@ export type Principal = {
   fullName: string
   role: Role
   institutionId: string | null
-  campusId: string | null
 }

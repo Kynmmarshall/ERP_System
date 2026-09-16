@@ -34,7 +34,6 @@ const enrollment: Enrollment = {
   id: 'enr-1',
   programId: 'prog-1',
   termId: 'term-1',
-  campusId: 'campus-1',
   studentId: 'student-1',
   status: 'accepted',
   createdAt: '2026-01-01T00:00:00Z',

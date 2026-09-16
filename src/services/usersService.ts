@@ -7,7 +7,6 @@ type UserSummaryResponse = {
   full_name: string
   role: Role
   is_active: boolean
-  campus_id: string | null
   created_at: string
 }
 

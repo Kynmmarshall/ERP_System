@@ -52,7 +52,6 @@ const studentPrincipal = {
   fullName: 'Test Student',
   role: 'student' as const,
   institutionId: 'inst-1',
-  campusId: 'campus-1',
 }
 
 describe('EnrollmentPage', () => {
@@ -80,21 +79,12 @@ describe('EnrollmentPage', () => {
     expect(screen.queryByText('Enroll in a program')).not.toBeInTheDocument()
   })
 
-  it('shows an error when the student has no campus assigned', async () => {
-    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, campusId: null } })
-
-    renderPage()
-
-    expect(await screen.findByText('No campus assigned')).toBeInTheDocument()
-  })
-
   it('loads programs and terms and submits a new enrollment', async () => {
     const user = userEvent.setup()
     mockCreateEnrollment.mockResolvedValue({
       id: 'enr-1',
       programId: 'prog-1',
       termId: 'term-1',
-      campusId: 'campus-1',
       studentId: 'student-1',
       status: 'accepted',
       createdAt: '2026-01-01T00:00:00Z',
@@ -110,7 +100,6 @@ describe('EnrollmentPage', () => {
       expect(mockCreateEnrollment).toHaveBeenCalledWith({
         programId: 'prog-1',
         termId: 'term-1',
-        campusId: 'campus-1',
       }),
     )
   })
@@ -121,7 +110,6 @@ describe('EnrollmentPage', () => {
         id: 'enr-2',
         programId: 'prog-1',
         termId: 'term-1',
-        campusId: 'campus-1',
         studentId: 'student-1',
         status: 'accepted',
         createdAt: '2026-01-01T00:00:00Z',
