@@ -101,8 +101,8 @@ export async function downloadReceipt(invoiceId: string): Promise<void> {
 }
 
 // --- Staff / admin operations ----------------------------------------------
-// All role-gated server-side to admin/staff/super_admin (regenerate is
-// super_admin only).
+// All role-gated server-side to admin/finance_staff (regenerate is
+// admin only).
 
 type ExpenseResponse = {
   id: string

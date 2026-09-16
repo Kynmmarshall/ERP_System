@@ -170,7 +170,7 @@ function NewScheduleForm() {
         <Button type="submit" size="sm" isLoading={mutation.isPending}>
           Create schedule version
         </Button>
-        <p className="text-sm text-muted">Created unverified - a super admin must verify it.</p>
+        <p className="text-sm text-muted">Created unverified - another admin must verify it.</p>
       </div>
       {error ? (
         <p role="alert" className="mt-2 text-xs text-error">
@@ -251,7 +251,6 @@ function SchedulesSection({ schedules }: { schedules: PayrollSchedule[] }) {
   const { principal } = useAuth()
   const queryClient = useQueryClient()
   const [error, setError] = useState<string | null>(null)
-  const isSuperAdmin = principal?.role === 'super_admin'
 
   const mutation = useMutation({
     mutationFn: (scheduleId: string) => verifyPayrollSchedule(scheduleId),
@@ -278,45 +277,52 @@ function SchedulesSection({ schedules }: { schedules: PayrollSchedule[] }) {
         </p>
       ) : null}
       <ul className="mt-4 space-y-3">
-        {schedules.map((schedule) => (
-          <li
-            key={schedule.id}
-            className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface-elevated p-4"
-          >
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-text">Effective {schedule.effectiveFrom}</p>
-              <p className="mt-0.5 text-sm text-muted">
-                CNPS {schedule.cnpsEmployeeRate} employee / {schedule.cnpsEmployerRate} employer · ceiling{' '}
-                {formatXaf(schedule.cnpsCeilingXaf)}
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  schedule.isVerified ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'
-                }`}
-              >
-                {schedule.isVerified ? 'verified' : 'unverified'}
-              </span>
-              {!schedule.isVerified && isSuperAdmin ? (
-                <Button
-                  size="sm"
-                  onClick={() => mutation.mutate(schedule.id)}
-                  isLoading={mutation.isPending && mutation.variables === schedule.id}
+        {schedules.map((schedule) => {
+          const isOwnSchedule = schedule.createdBy != null && schedule.createdBy === principal?.id
+          return (
+            <li
+              key={schedule.id}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface-elevated p-4"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-text">Effective {schedule.effectiveFrom}</p>
+                <p className="mt-0.5 text-sm text-muted">
+                  CNPS {schedule.cnpsEmployeeRate} employee / {schedule.cnpsEmployerRate} employer · ceiling{' '}
+                  {formatXaf(schedule.cnpsCeilingXaf)}
+                </p>
+                {!schedule.isVerified && isOwnSchedule ? (
+                  <p className="mt-1 text-sm text-warning">
+                    You created this schedule, so another admin has to verify it.
+                  </p>
+                ) : null}
+              </div>
+              <div className="flex items-center gap-3">
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    schedule.isVerified ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'
+                  }`}
                 >
-                  Verify
-                </Button>
-              ) : null}
-            </div>
-          </li>
-        ))}
+                  {schedule.isVerified ? 'verified' : 'unverified'}
+                </span>
+                {!schedule.isVerified ? (
+                  <Button
+                    size="sm"
+                    disabled={isOwnSchedule}
+                    onClick={() => mutation.mutate(schedule.id)}
+                    isLoading={mutation.isPending && mutation.variables === schedule.id}
+                  >
+                    Verify
+                  </Button>
+                ) : null}
+              </div>
+            </li>
+          )
+        })}
       </ul>
-      {!isSuperAdmin ? (
-        <p className="mt-3 text-sm text-muted">
-          Only a super admin can verify a schedule version. This separation is what stops the person who
-          sets the rates from also releasing pay against them.
-        </p>
-      ) : null}
+      <p className="mt-3 text-sm text-muted">
+        A schedule must be verified by a different admin than the one who wrote it, so the person who
+        sets the rates never also releases pay against them.
+      </p>
     </>
   )
 }
@@ -509,7 +515,7 @@ export function PayrollPanel() {
                   </div>
                   {blocked && run.status === 'draft' ? (
                     <p className="mt-2 text-sm text-warning">
-                      Approval is blocked until a super admin verifies this run’s schedule version.
+                      Approval is blocked until another admin verifies this run’s schedule version.
                     </p>
                   ) : null}
                   {expanded === run.id ? <RunPayslips runId={run.id} /> : null}

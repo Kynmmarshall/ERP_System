@@ -106,50 +106,14 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
       icon: ShieldCheck,
     },
   ],
-  super_admin: [
-    {
-      to: '/settings',
-      label: 'User access',
-      description: 'Grant or revoke any role, including Super Admin.',
-      icon: Settings,
-    },
-    {
-      to: '/people',
-      label: 'People & operations',
-      description: 'Verify payroll rate schedules and release payroll runs.',
-      icon: Users,
-    },
-    {
-      to: '/academic',
-      label: 'Academic operations',
-      description: 'Course catalogue, offerings, exam timetable, grading and appeals.',
-      icon: GraduationCap,
-    },
-    {
-      to: '/finance',
-      label: 'Finance',
-      description: 'Ledger, expenses, monthly summaries and fee schedules.',
-      icon: BarChart3,
-    },
-    {
-      to: '/marketing',
-      label: 'Marketing',
-      description: 'Campaigns, leads and return on spend.',
-      icon: Megaphone,
-    },
-    {
-      to: '/status',
-      label: 'System status',
-      description: 'Live health of the gateway and every service.',
-      icon: ShieldCheck,
-    },
-  ],
 }
 
 export function OverviewPage() {
   const { principal } = useAuth()
   const role = principal?.role
-  const links = role ? LINKS_BY_ROLE[role] : []
+  // A role the UI does not know about (an access token minted before a role
+  // was renamed, say) must degrade to no links rather than throw.
+  const links = (role && LINKS_BY_ROLE[role]) ?? []
 
   return (
     <div>
@@ -158,7 +122,7 @@ export function OverviewPage() {
         Welcome, {principal?.fullName ?? 'there'}
       </h1>
       <p className="mt-2 text-sm text-muted">
-        Signed in as <span className="text-text">{role ? ROLE_LABELS[role] : 'unknown role'}</span>
+        Signed in as <span className="text-text">{(role && ROLE_LABELS[role]) ?? 'unknown role'}</span>
         {principal?.institutionId ? ' at ICT University' : ' (platform administrator)'}.
       </p>
 

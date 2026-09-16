@@ -214,6 +214,8 @@ type PayrollScheduleResponse = {
   id: string
   effective_from: string
   is_verified: boolean
+  created_by: string | null
+  verified_by: string | null
   cnps_employee_rate: string
   cnps_employer_rate: string
   cnps_ceiling_xaf: number
@@ -478,6 +480,8 @@ export async function fetchPayrollSchedules(): Promise<PayrollSchedule[]> {
     id: item.id,
     effectiveFrom: item.effective_from,
     isVerified: item.is_verified,
+    createdBy: item.created_by,
+    verifiedBy: item.verified_by,
     cnpsEmployeeRate: item.cnps_employee_rate,
     cnpsEmployerRate: item.cnps_employer_rate,
     cnpsCeilingXaf: item.cnps_ceiling_xaf,

@@ -62,7 +62,7 @@ export function FinancialOverviewPanel() {
           <div className="mt-4">
             <EmptyState
               title="No monthly summary yet"
-              message="The finance worker generates these on a schedule; a super admin can also regenerate a period on demand."
+              message="The finance worker generates these on a schedule; an admin can also regenerate a period on demand."
             />
           </div>
         )}

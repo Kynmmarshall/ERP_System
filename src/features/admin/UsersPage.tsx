@@ -67,9 +67,9 @@ export function UsersPage() {
       <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text">User access</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted">
         Roles decide what each person can reach. Self-registration always creates a Student account,
-        so Staff and Admin access is granted here - either directly in the table below, or by
-        approving an access request. You cannot change your own role, and only a Super Admin can
-        grant or remove Super Admin.
+        so every other role is granted here - either directly in the table below, or by approving an
+        access request. You cannot change your own role, and the last remaining Admin cannot be
+        demoted.
       </p>
 
       {error ? (
@@ -115,9 +115,7 @@ export function UsersPage() {
             <tbody>
               {usersQuery.data.map((user) => {
                 const isSelf = user.id === principal?.id
-                const isProtectedSuperAdmin =
-                  user.role === 'super_admin' && principal?.role !== 'super_admin'
-                const disabled = isSelf || isProtectedSuperAdmin || roleMutation.isPending
+                const disabled = isSelf || roleMutation.isPending
                 return (
                   <tr key={user.id} className="border-b border-border/60">
                     <td className="py-3 pr-4 text-text">
@@ -130,13 +128,7 @@ export function UsersPage() {
                       <RoleSelect
                         user={user}
                         disabled={disabled}
-                        disabledReason={
-                          isSelf
-                            ? 'You cannot change your own role'
-                            : isProtectedSuperAdmin
-                              ? 'Only a Super Admin can change a Super Admin'
-                              : undefined
-                        }
+                        disabledReason={isSelf ? 'You cannot change your own role' : undefined}
                         onChange={(role) => roleMutation.mutate({ userId: user.id, role })}
                       />
                     </td>

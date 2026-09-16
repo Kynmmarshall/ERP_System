@@ -8,6 +8,7 @@ import type { Enrollment } from '@/types/academic'
 
 const mockFetchCourses = vi.fn()
 const mockFetchCourseOfferings = vi.fn()
+const mockFetchTerms = vi.fn()
 const mockFetchMyCourseRegistrations = vi.fn()
 const mockFetchMyAtRiskStatus = vi.fn()
 const mockRegisterForCourse = vi.fn()
@@ -20,6 +21,7 @@ const mockSubmitGradeAppeal = vi.fn()
 vi.mock('@/services/academicService', () => ({
   fetchCourses: () => mockFetchCourses(),
   fetchCourseOfferings: () => mockFetchCourseOfferings(),
+  fetchTerms: () => mockFetchTerms(),
   fetchMyCourseRegistrations: () => mockFetchMyCourseRegistrations(),
   fetchMyAtRiskStatus: () => mockFetchMyAtRiskStatus(),
   registerForCourse: (input: unknown) => mockRegisterForCourse(input),
@@ -54,6 +56,9 @@ describe('CoursesPanel', () => {
     mockFetchCourses.mockResolvedValue([{ id: 'course-1', programId: 'prog-1', code: 'CS101', name: 'Intro to CS', credits: 3 }])
     mockFetchCourseOfferings.mockResolvedValue([
       { id: 'offering-1', courseId: 'course-1', termId: 'term-1', instructorId: 'instr-1', room: 'A1', capacity: 30 },
+    ])
+    mockFetchTerms.mockResolvedValue([
+      { id: 'term-1', name: 'Fall 2026', startsOn: '2026-09-01', endsOn: '2026-12-20' },
     ])
     mockFetchMyCourseRegistrations.mockResolvedValue([])
     mockFetchMyAtRiskStatus.mockResolvedValue([])

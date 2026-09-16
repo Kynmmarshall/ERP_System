@@ -8,6 +8,7 @@ import { FormField } from '@/components/ui/FormField'
 import { Input } from '@/components/ui/Input'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useEmployeeNames, useEmployees } from '@/features/hr/admin/useEmployeeNames'
+import { QrTokenImage } from '@/features/hr/admin/QrTokenImage'
 import { createShift, fetchShifts, issueShiftQrToken } from '@/services/hrService'
 import type { ShiftQrToken } from '@/types/hr'
 
@@ -165,7 +166,11 @@ export function ShiftsPanel() {
                   </div>
                   {token ? (
                     <div className="mt-3 rounded-md border border-border bg-surface p-3">
-                      <p className="text-xs uppercase tracking-wide text-muted">Check-in token</p>
+                      <p className="text-xs uppercase tracking-wide text-muted">Check-in QR code</p>
+                      <QrTokenImage value={token.token} />
+                      <p className="mt-2 text-xs uppercase tracking-wide text-muted">
+                        Or type this code
+                      </p>
                       <p className="mt-1 break-all font-mono text-sm text-text">{token.token}</p>
                       <p className="mt-1 text-xs text-muted">
                         Expires {new Date(token.expiresAt).toLocaleTimeString()}

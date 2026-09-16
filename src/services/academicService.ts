@@ -242,7 +242,7 @@ export function downloadAttendanceSummary(): Promise<void> {
 }
 
 // --- Staff / instructor operations -----------------------------------------
-// Every endpoint below is role-gated server-side (admin/staff/super_admin, and
+// Every endpoint below is role-gated server-side (admin/lecturer, and
 // for offering-scoped work the caller must be that offering's instructor).
 
 type AttendanceSessionResponse = { id: string; course_offering_id: string; session_date: string }

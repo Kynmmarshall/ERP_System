@@ -10,6 +10,7 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { FormField } from '@/components/ui/FormField'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useAuth } from '@/features/auth/AuthContext'
+import { TEACHING_ROLES, hasRole } from '@/features/auth/roles'
 import { CoursesPanel } from '@/features/academic/CoursesPanel'
 import { StaffAcademicPage } from '@/features/academic/staff/StaffAcademicPage'
 import {
@@ -140,7 +141,9 @@ export function EnrollmentPage() {
     }
   })
 
-  if (principal?.role !== 'student') {
+  // Checked positively: an unrecognised role must not fall through to the
+  // teaching workspace.
+  if (hasRole(principal?.role, TEACHING_ROLES)) {
     return <StaffAcademicPage />
   }
 

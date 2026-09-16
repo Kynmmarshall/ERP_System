@@ -1,7 +1,6 @@
 import type { Role } from '@/types/auth'
 
 export const ROLES: readonly Role[] = [
-  'super_admin',
   'admin',
   'lecturer',
   'finance_staff',
@@ -10,7 +9,6 @@ export const ROLES: readonly Role[] = [
 ] as const
 
 export const ROLE_LABELS: Record<Role, string> = {
-  super_admin: 'Super Admin',
   admin: 'Admin',
   lecturer: 'Lecturer',
   finance_staff: 'Finance Staff',
@@ -22,7 +20,7 @@ export const ROLE_LABELS: Record<Role, string> = {
  * (require_roles). Kept in one place so a UI guard can never silently drift
  * from the API one - but these are UX only: the API re-checks every request
  * regardless. */
-export const ADMIN_ROLES: readonly Role[] = ['admin', 'super_admin'] as const
+export const ADMIN_ROLES: readonly Role[] = ['admin'] as const
 
 /** Anyone employed by the university - the band HR self-service uses. */
 export const STAFF_ROLES: readonly Role[] = [
@@ -30,17 +28,16 @@ export const STAFF_ROLES: readonly Role[] = [
   'finance_staff',
   'marketing',
   'admin',
-  'super_admin',
 ] as const
 
 /** Teaching: grading, attendance, the course catalogue and exam timetable. */
-export const TEACHING_ROLES: readonly Role[] = ['lecturer', 'admin', 'super_admin'] as const
+export const TEACHING_ROLES: readonly Role[] = ['lecturer', 'admin'] as const
 
 /** Money: invoices, expenses, ledger, monthly summaries, fee schedules. */
-export const FINANCE_ROLES: readonly Role[] = ['finance_staff', 'admin', 'super_admin'] as const
+export const FINANCE_ROLES: readonly Role[] = ['finance_staff', 'admin'] as const
 
 /** Campaigns, leads and ROI. */
-export const MARKETING_ROLES: readonly Role[] = ['marketing', 'admin', 'super_admin'] as const
+export const MARKETING_ROLES: readonly Role[] = ['marketing', 'admin'] as const
 
 /** Who may open /academic at all - students get their own view there. */
 export const ACADEMIC_PAGE_ROLES: readonly Role[] = ['student', ...TEACHING_ROLES] as const
@@ -48,9 +45,8 @@ export const ACADEMIC_PAGE_ROLES: readonly Role[] = ['student', ...TEACHING_ROLE
 /** Who may open /finance at all - students see their own fees there. */
 export const FINANCE_PAGE_ROLES: readonly Role[] = ['student', ...FINANCE_ROLES] as const
 
-/** Roles an applicant may ask for at sign-up. Super Admin is absent on
- * purpose: it is platform-wide, so it stays grantable only by an existing
- * super admin (the API rejects it here too). */
+/** Roles an applicant may ask for at sign-up. Anything above Student is
+ * only a request until an admin approves it. */
 export const REQUESTABLE_ROLES: readonly Role[] = [
   'student',
   'lecturer',

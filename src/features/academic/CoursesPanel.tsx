@@ -10,6 +10,7 @@ import {
   downloadAttendanceSummary,
   downloadTranscript,
   fetchCourseOfferings,
+  fetchTerms,
   fetchCourses,
   fetchMyAtRiskStatus,
   fetchMyCourseRegistrations,
@@ -27,6 +28,7 @@ export function CoursesPanel({ enrollments }: { enrollments: Enrollment[] }) {
 
   const coursesQuery = useQuery({ queryKey: ['courses'], queryFn: fetchCourses })
   const offeringsQuery = useQuery({ queryKey: ['course-offerings'], queryFn: fetchCourseOfferings })
+  const termsQuery = useQuery({ queryKey: ['terms'], queryFn: fetchTerms })
   const registrationsQuery = useQuery({
     queryKey: ['my-course-registrations'],
     queryFn: fetchMyCourseRegistrations,
@@ -63,6 +65,7 @@ export function CoursesPanel({ enrollments }: { enrollments: Enrollment[] }) {
   }
 
   const coursesById = new Map(coursesQuery.data.map((course) => [course.id, course]))
+  const termsById = new Map((termsQuery.data ?? []).map((term) => [term.id, term]))
   const registeredOfferingIds = new Set(registrationsQuery.data.map((r) => r.courseOfferingId))
   const atRiskByOffering = new Map(atRiskQuery.data.map((status) => [status.courseOfferingId, status]))
 
@@ -96,6 +99,7 @@ export function CoursesPanel({ enrollments }: { enrollments: Enrollment[] }) {
             {availableByEnrollment.map(({ enrollment, offerings }) =>
               offerings.map((offering) => {
                 const course = coursesById.get(offering.courseId)
+                const termName = termsById.get(offering.termId)?.name
                 return (
                   <div
                     key={offering.id}
@@ -105,7 +109,10 @@ export function CoursesPanel({ enrollments }: { enrollments: Enrollment[] }) {
                       <p className="text-sm font-medium text-text">
                         {course?.name ?? offering.courseId} ({course?.code})
                       </p>
-                      <p className="text-xs text-muted">Room {offering.room}</p>
+                      <p className="text-xs text-muted">
+                        {termName ? `${termName} · ` : ''}Room {offering.room}
+                        {course ? ` · ${course.credits} credits` : ''}
+                      </p>
                     </div>
                     <Button
                       size="sm"

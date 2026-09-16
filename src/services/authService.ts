@@ -15,7 +15,7 @@ type MfaChallengeResponse = {
   expires_in_seconds: number
 }
 
-/** Admin/super_admin logins complete in two steps, so login() resolves to
+/** Admin logins complete in two steps, so login() resolves to
  * either a finished session or a pending challenge - never a token the
  * caller has to guess the meaning of. */
 export type LoginResult =

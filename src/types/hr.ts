@@ -114,6 +114,8 @@ export type PayrollSchedule = {
   id: string
   effectiveFrom: string
   isVerified: boolean
+  createdBy: string | null
+  verifiedBy: string | null
   cnpsEmployeeRate: string
   cnpsEmployerRate: string
   cnpsCeilingXaf: number

@@ -75,8 +75,8 @@ describe('RequireRole', () => {
     expect(screen.queryByText('Protected content')).not.toBeInTheDocument()
   })
 
-  it.each(['admin', 'super_admin'] as const)('allows %s into an admin-only area', async (role) => {
-    stubSessionAs(role)
+  it('allows admin into an admin-only area', async () => {
+    stubSessionAs('admin')
     renderGuarded(ADMIN_ROLES)
 
     await waitFor(() => expect(screen.getByText('Protected content')).toBeInTheDocument())
@@ -90,7 +90,7 @@ describe('RequireRole', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
 
-  it.each(['lecturer', 'admin', 'super_admin'] as const)(
+  it.each(['lecturer', 'finance_staff', 'marketing', 'admin'] as const)(
     'allows %s into a staff-only area',
     async (role) => {
       stubSessionAs(role)
@@ -106,7 +106,6 @@ describe('RequireRole', () => {
 
     const alert = await screen.findByRole('alert')
     expect(alert).toHaveTextContent(/Admin/)
-    expect(alert).toHaveTextContent(/Super Admin/)
     expect(alert).toHaveTextContent(/Your role is Student/)
   })
 })

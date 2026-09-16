@@ -94,22 +94,10 @@ describe('UsersPage', () => {
     expect(screen.getByLabelText('Role', { selector: `#role-${OTHER_USER_ID}` })).toBeEnabled()
   })
 
-  it('does not let a plain admin edit a super admin', async () => {
+  it('lets an admin edit another admin', async () => {
     stubBackend({
       actorRole: 'admin',
-      users: [userRow(SELF_ID, 'admin', 'Me'), userRow(OTHER_USER_ID, 'super_admin', 'The Owner')],
-    })
-
-    renderUsersPage()
-    await screen.findByText('The Owner')
-
-    expect(screen.getByLabelText('Role', { selector: `#role-${OTHER_USER_ID}` })).toBeDisabled()
-  })
-
-  it('lets a super admin edit another super admin', async () => {
-    stubBackend({
-      actorRole: 'super_admin',
-      users: [userRow(SELF_ID, 'super_admin', 'Me'), userRow(OTHER_USER_ID, 'super_admin', 'Peer')],
+      users: [userRow(SELF_ID, 'admin', 'Me'), userRow(OTHER_USER_ID, 'admin', 'Peer')],
     })
 
     renderUsersPage()

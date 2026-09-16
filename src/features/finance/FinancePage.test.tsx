@@ -51,8 +51,8 @@ describe('FinancePage', () => {
     mockUseAuth.mockReturnValue({ principal: studentPrincipal })
   })
 
-  it('shows the finance workspace, not the student invoice list, for staff', async () => {
-    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, role: 'lecturer' } })
+  it('shows the finance workspace, not the student invoice list, for finance staff', async () => {
+    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, role: 'finance_staff' } })
     mockFetchMyInvoices.mockResolvedValue([])
     mockFetchSummaries.mockResolvedValue([])
     mockFetchLedgerEntries.mockResolvedValue([])
