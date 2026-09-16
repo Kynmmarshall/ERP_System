@@ -79,3 +79,30 @@ export type AtRiskStatus = {
   assessmentAverage: number | null
   atRisk: boolean
 }
+
+export type AttendanceSession = {
+  id: string
+  courseOfferingId: string
+  sessionDate: string
+}
+
+export type AttendanceRecord = {
+  id: string
+  attendanceSessionId: string
+  studentId: string
+  present: boolean
+}
+
+export type ExamSchedule = {
+  id: string
+  courseOfferingId: string
+  room: string
+  startsAt: string
+  endsAt: string
+}
+
+export type Prerequisite = {
+  id: string
+  courseId: string
+  prerequisiteCourseId: string
+}

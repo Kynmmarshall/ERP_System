@@ -11,6 +11,7 @@ import { FormField } from '@/components/ui/FormField'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useAuth } from '@/features/auth/AuthContext'
 import { CoursesPanel } from '@/features/academic/CoursesPanel'
+import { StaffAcademicPage } from '@/features/academic/staff/StaffAcademicPage'
 import {
   createEnrollment,
   fetchEnrollments,
@@ -141,18 +142,7 @@ export function EnrollmentPage() {
   })
 
   if (principal?.role !== 'student') {
-    return (
-      <div>
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">Academic</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-text">Academic</h1>
-        <div className="mt-8">
-          <EmptyState
-            title="Not built yet"
-            message="Staff enrollment management lands in a later development phase of this project."
-          />
-        </div>
-      </div>
-    )
+    return <StaffAcademicPage />
   }
 
   if (!principal.campusId) {

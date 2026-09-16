@@ -71,12 +71,13 @@ describe('EnrollmentPage', () => {
     mockFetchMyAtRiskStatus.mockResolvedValue([])
   })
 
-  it('shows a placeholder for non-student roles', async () => {
+  it('shows the teaching workspace, not the student enrollment form, for staff', async () => {
     mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, role: 'staff' } })
 
     renderPage()
 
-    expect(await screen.findByText('Not built yet')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Teaching workspace' })).toBeInTheDocument()
+    expect(screen.queryByText('Enroll in a program')).not.toBeInTheDocument()
   })
 
   it('shows an error when the student has no campus assigned', async () => {
