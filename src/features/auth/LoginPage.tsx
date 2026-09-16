@@ -51,6 +51,7 @@ export function LoginPage() {
         className="w-full max-w-sm"
       >
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">ICT University ERP</p>
+        <img src="/logo.png" alt="" className="mt-4 size-12" />
         <h1 className="mt-2 text-2xl font-semibold tracking-tight text-text">Sign in</h1>
 
         <form onSubmit={onSubmit} noValidate className="mt-8 flex flex-col gap-5">

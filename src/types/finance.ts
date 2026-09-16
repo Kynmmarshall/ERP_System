@@ -13,6 +13,7 @@ export type PaymentIntent = {
   amountXaf: number
   provider: string
   providerReference: string
+  redirectUrl: string | null
   status: 'pending' | 'succeeded' | 'failed'
   createdAt: string
 }

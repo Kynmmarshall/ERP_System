@@ -16,6 +16,7 @@ type PaymentIntentResponse = {
   amount_xaf: number
   provider: string
   provider_reference: string
+  redirect_url: string | null
   status: 'pending' | 'succeeded' | 'failed'
   created_at: string
 }
@@ -38,6 +39,7 @@ function toPaymentIntent(body: PaymentIntentResponse): PaymentIntent {
     amountXaf: body.amount_xaf,
     provider: body.provider,
     providerReference: body.provider_reference,
+    redirectUrl: body.redirect_url,
     status: body.status,
     createdAt: body.created_at,
   }

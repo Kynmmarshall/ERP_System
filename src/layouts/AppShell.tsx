@@ -60,7 +60,10 @@ export function AppShell() {
       </a>
 
       <header className="flex h-14 items-center justify-between border-b border-border px-4 lg:hidden">
-        <span className="text-sm font-semibold tracking-tight text-text">ICT University ERP</span>
+        <span className="flex items-center gap-2 text-sm font-semibold tracking-tight text-text">
+          <img src="/logo.png" alt="" className="size-6" />
+          ICT University ERP
+        </span>
         <button
           type="button"
           onClick={() => setMobileNavOpen(true)}
@@ -94,7 +97,10 @@ export function AppShell() {
       <div className="mx-auto flex max-w-[1600px]">
         <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col justify-between border-r border-border p-4 lg:flex">
           <div>
-            <p className="px-3 text-xs font-medium uppercase tracking-[0.2em] text-muted">ICT University</p>
+            <div className="flex items-center gap-2 px-3">
+              <img src="/logo.png" alt="" className="size-6" />
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">ICT University</p>
+            </div>
             <div className="mt-6">
               <NavLinks />
             </div>

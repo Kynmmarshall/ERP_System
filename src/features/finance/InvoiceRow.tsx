@@ -16,13 +16,25 @@ function formatXaf(amount: number): string {
 }
 
 function PayForm({ invoice, onPaid }: { invoice: Invoice; onPaid: () => void }) {
+  const pendingIntentKey = `camerpay-pending-intent:${invoice.id}`
   const [payerMsisdn, setPayerMsisdn] = useState('')
-  const [intentId, setIntentId] = useState<string | null>(null)
+  // Resumes tracking an intent still pending from before a CamerPay hosted-
+  // page redirect trip (see onSuccess below) - a fresh page load otherwise
+  // has no memory of it.
+  const [intentId, setIntentId] = useState<string | null>(() => sessionStorage.getItem(pendingIntentKey))
   const [error, setError] = useState<string | null>(null)
 
   const createMutation = useMutation({
     mutationFn: () => createPaymentIntent(invoice.id, payerMsisdn),
-    onSuccess: (intent) => setIntentId(intent.id),
+    onSuccess: (intent) => {
+      setIntentId(intent.id)
+      if (intent.redirectUrl) {
+        // Hosted-checkout provider (camerpay): remember which intent to
+        // resume polling once the customer's browser comes back.
+        sessionStorage.setItem(pendingIntentKey, intent.id)
+        window.location.href = intent.redirectUrl
+      }
+    },
     onError: (err) => setError(err instanceof Error ? err.message : 'Could not start payment'),
   })
 
@@ -34,11 +46,15 @@ function PayForm({ invoice, onPaid }: { invoice: Invoice; onPaid: () => void }) 
   })
 
   if (intentQuery.data?.status === 'succeeded') {
+    sessionStorage.removeItem(pendingIntentKey)
     onPaid()
     return <p className="text-sm text-success">Payment succeeded.</p>
   }
 
   if (intentId !== null) {
+    if (intentQuery.data?.status === 'failed') {
+      sessionStorage.removeItem(pendingIntentKey)
+    }
     return (
       <div className="flex flex-col gap-2">
         <p className="text-sm text-muted">
