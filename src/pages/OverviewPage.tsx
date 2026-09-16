@@ -47,6 +47,12 @@ const LINKS_BY_ROLE: Record<Role, QuickLink[]> = {
       description: 'Leave approvals, recruitment, assets and payroll runs.',
       icon: Users,
     },
+    {
+      to: '/status',
+      label: 'System status',
+      description: 'Live health of the gateway and every service.',
+      icon: ShieldCheck,
+    },
   ],
   super_admin: [
     {

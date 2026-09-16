@@ -23,7 +23,7 @@ const NAV_ITEMS: { to: string; label: string; icon: typeof LayoutDashboard; end?
   { to: '/academic', label: 'Academic', icon: GraduationCap, roles: ROLES },
   { to: '/finance', label: 'Finance & Marketing', icon: BarChart3, roles: ROLES },
   { to: '/people', label: 'People & Operations', icon: Users, roles: STAFF_ROLES },
-  { to: '/status', label: 'System Status', icon: Building2, roles: ROLES },
+  { to: '/status', label: 'System Status', icon: Building2, roles: ADMIN_ROLES },
   { to: '/settings', label: 'Settings', icon: Settings, roles: ADMIN_ROLES },
 ]
 

@@ -46,7 +46,14 @@ export const router = createBrowserRouter([
           </RequireRole>
         ),
       },
-      { path: 'status', element: <SystemStatusPage /> },
+      {
+        path: 'status',
+        element: (
+          <RequireRole allowed={ADMIN_ROLES}>
+            <SystemStatusPage />
+          </RequireRole>
+        ),
+      },
     ],
   },
 ])
