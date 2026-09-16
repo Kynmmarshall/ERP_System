@@ -90,12 +90,24 @@ export async function verifyMfa(challengeId: string, code: string): Promise<Prin
   return fetchMe()
 }
 
-export async function register(email: string, password: string, fullName: string): Promise<Principal> {
+export async function register(input: {
+  email: string
+  password: string
+  fullName: string
+  requestedRole?: Role
+  justification?: string
+}): Promise<Principal> {
   const response = await fetch('/api/v1/auth/register', {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password, full_name: fullName }),
+    body: JSON.stringify({
+      email: input.email,
+      password: input.password,
+      full_name: input.fullName,
+      requested_role: input.requestedRole ?? null,
+      justification: input.justification ?? '',
+    }),
   })
   const body = await response.json().catch(() => null)
   if (!response.ok) {

@@ -17,7 +17,7 @@ import {
   verifyMfa as verifyMfaRequest,
   type LoginResult,
 } from '@/services/authService'
-import type { Principal } from '@/types/auth'
+import type { Principal, Role } from '@/types/auth'
 
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
 
@@ -26,7 +26,13 @@ type AuthContextValue = {
   principal: Principal | null
   login: (email: string, password: string) => Promise<LoginResult>
   verifyMfa: (challengeId: string, code: string) => Promise<void>
-  register: (email: string, password: string, fullName: string) => Promise<void>
+  register: (input: {
+    email: string
+    password: string
+    fullName: string
+    requestedRole?: Role
+    justification?: string
+  }) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -87,11 +93,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus('authenticated')
   }, [])
 
-  const register = useCallback(async (email: string, password: string, fullName: string) => {
-    const me = await registerRequest(email, password, fullName)
-    setPrincipal(me)
-    setStatus('authenticated')
-  }, [])
+  const register = useCallback(
+    async (input: {
+      email: string
+      password: string
+      fullName: string
+      requestedRole?: Role
+      justification?: string
+    }) => {
+      const me = await registerRequest(input)
+      setPrincipal(me)
+      setStatus('authenticated')
+    },
+    [],
+  )
 
   const logout = useCallback(async () => {
     await logoutRequest()

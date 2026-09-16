@@ -6,6 +6,7 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useAuth } from '@/features/auth/AuthContext'
 import { ROLE_LABELS, ROLES } from '@/features/auth/roles'
+import { RoleRequestsPanel } from '@/features/admin/RoleRequestsPanel'
 import { fetchUsers, updateUserRole } from '@/services/usersService'
 import type { Role } from '@/types/auth'
 
@@ -65,9 +66,10 @@ export function UsersPage() {
       <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">Settings</p>
       <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text">User access</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted">
-        Roles decide what each person can reach. Self-registration only ever creates a Student
-        account, so Staff and Admin access is granted here. You cannot change your own role, and
-        only a Super Admin can grant or remove Super Admin.
+        Roles decide what each person can reach. Self-registration always creates a Student account,
+        so Staff and Admin access is granted here - either directly in the table below, or by
+        approving an access request. You cannot change your own role, and only a Super Admin can
+        grant or remove Super Admin.
       </p>
 
       {error ? (
@@ -145,6 +147,8 @@ export function UsersPage() {
           </table>
         </div>
       )}
+
+      <RoleRequestsPanel />
     </div>
   )
 }
