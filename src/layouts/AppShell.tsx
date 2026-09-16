@@ -13,15 +13,23 @@ import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { useAuth } from '@/features/auth/AuthContext'
-import { ADMIN_ROLES, ROLE_LABELS, ROLES, STAFF_ROLES, hasRole } from '@/features/auth/roles'
+import {
+  ACADEMIC_PAGE_ROLES,
+  ADMIN_ROLES,
+  FINANCE_PAGE_ROLES,
+  ROLE_LABELS,
+  ROLES,
+  STAFF_ROLES,
+  hasRole,
+} from '@/features/auth/roles'
 import type { Role } from '@/types/auth'
 
 // `roles` mirrors the route guards in app/router.tsx. Hiding a link is UX
 // only - the route guard and the API both re-check independently.
 const NAV_ITEMS: { to: string; label: string; icon: typeof LayoutDashboard; end?: boolean; roles: readonly Role[] }[] = [
   { to: '/', label: 'Overview', icon: LayoutDashboard, end: true, roles: ROLES },
-  { to: '/academic', label: 'Academic', icon: GraduationCap, roles: ROLES },
-  { to: '/finance', label: 'Finance & Marketing', icon: BarChart3, roles: ROLES },
+  { to: '/academic', label: 'Academic', icon: GraduationCap, roles: ACADEMIC_PAGE_ROLES },
+  { to: '/finance', label: 'Finance & Marketing', icon: BarChart3, roles: FINANCE_PAGE_ROLES },
   { to: '/people', label: 'People & Operations', icon: Users, roles: STAFF_ROLES },
   { to: '/status', label: 'System Status', icon: Building2, roles: ADMIN_ROLES },
   { to: '/settings', label: 'Settings', icon: Settings, roles: ADMIN_ROLES },

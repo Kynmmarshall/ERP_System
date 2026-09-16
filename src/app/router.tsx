@@ -25,11 +25,26 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <OverviewPage /> },
-      // Academic and Finance are open to every signed-in role: each page
-      // renders the caller's own records, and the API scopes them by
-      // ownership rather than by role.
-      { path: 'academic', element: <EnrollmentPage /> },
-      { path: 'finance', element: <FinancePage /> },
+      // Students share these two routes with staff; each page renders the
+      // caller's own view. A lecturer has no finance permissions and finance
+      // staff have no teaching permissions, so they are kept out entirely
+      // rather than shown a workspace that 403s on every call.
+      {
+        path: 'academic',
+        element: (
+          <RequireRole allowed={ACADEMIC_PAGE_ROLES}>
+            <EnrollmentPage />
+          </RequireRole>
+        ),
+      },
+      {
+        path: 'finance',
+        element: (
+          <RequireRole allowed={FINANCE_PAGE_ROLES}>
+            <FinancePage />
+          </RequireRole>
+        ),
+      },
       {
         path: 'people',
         element: (
