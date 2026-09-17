@@ -64,8 +64,32 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
+function AccountPanel({ onLogout, showLabel = false }: { onLogout: () => void; showLabel?: boolean }) {
+  const { principal } = useAuth()
+
+  return (
+    <div className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2">
+      <div className="min-w-0">
+        <p className="truncate text-sm font-medium text-text">{principal?.fullName}</p>
+        <p className="truncate text-xs text-muted">
+          {principal?.role ? ROLE_LABELS[principal.role] : null}
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={onLogout}
+        className="flex shrink-0 items-center gap-2 rounded-md p-2 text-sm text-muted hover:bg-surface-elevated hover:text-text"
+        aria-label="Log out"
+      >
+        <LogOut className="size-4" aria-hidden="true" />
+        {showLabel ? <span>Log out</span> : null}
+      </button>
+    </div>
+  )
+}
+
 export function AppShell() {
-  const { principal, logout } = useAuth()
+  const { logout } = useAuth()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   return (
@@ -77,7 +101,9 @@ export function AppShell() {
         Skip to content
       </a>
 
-      <header className="flex h-14 items-center justify-between border-b border-border px-4 lg:hidden">
+      {/* z-30 keeps this under the mobile drawer (z-40) and the skip link
+          (z-50). bg-background is required or content shows through it. */}
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background px-4 lg:hidden">
         <span className="flex items-center gap-2 text-sm font-semibold tracking-tight text-text">
           <img src="/logo.png" alt="" className="size-6" />
           ICT University ERP
@@ -107,7 +133,18 @@ export function AppShell() {
                 <X className="size-5" aria-hidden="true" />
               </button>
             </div>
-            <NavLinks onNavigate={() => setMobileNavOpen(false)} />
+            {/* Scrolls independently so the account panel below stays reachable
+                on a short screen. */}
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              <NavLinks onNavigate={() => setMobileNavOpen(false)} />
+            </div>
+            <AccountPanel
+              showLabel
+              onLogout={() => {
+                setMobileNavOpen(false)
+                void logout()
+              }}
+            />
           </div>
         </div>
       ) : null}
@@ -123,22 +160,7 @@ export function AppShell() {
               <NavLinks />
             </div>
           </div>
-          <div className="flex items-center justify-between rounded-md border border-border px-3 py-2">
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-text">{principal?.fullName}</p>
-              <p className="truncate text-xs text-muted">
-                {principal?.role ? ROLE_LABELS[principal.role] : null}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => void logout()}
-              className="rounded-md p-2 text-muted hover:bg-surface-elevated hover:text-text"
-              aria-label="Log out"
-            >
-              <LogOut className="size-4" aria-hidden="true" />
-            </button>
-          </div>
+          <AccountPanel onLogout={() => void logout()} />
         </aside>
 
         <main id="main-content" className="min-w-0 flex-1 px-4 py-8 lg:px-8">
