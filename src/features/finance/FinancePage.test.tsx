@@ -14,12 +14,17 @@ const mockFetchMyInvoices = vi.fn()
 const mockCreatePaymentIntent = vi.fn()
 const mockFetchPaymentIntent = vi.fn()
 const mockDownloadReceipt = vi.fn()
+const mockFetchSummaries = vi.fn()
+const mockFetchLedgerEntries = vi.fn()
 
 vi.mock('@/services/financeService', () => ({
   fetchMyInvoices: () => mockFetchMyInvoices(),
   createPaymentIntent: (invoiceId: string, payerMsisdn: string) => mockCreatePaymentIntent(invoiceId, payerMsisdn),
   fetchPaymentIntent: (intentId: string) => mockFetchPaymentIntent(intentId),
   downloadReceipt: (invoiceId: string) => mockDownloadReceipt(invoiceId),
+  // Used by the staff workspace that non-student roles now land on.
+  fetchSummaries: () => mockFetchSummaries(),
+  fetchLedgerEntries: () => mockFetchLedgerEntries(),
 }))
 
 const studentPrincipal = {
@@ -46,13 +51,15 @@ describe('FinancePage', () => {
     mockUseAuth.mockReturnValue({ principal: studentPrincipal })
   })
 
-  it('shows a placeholder for non-student roles', async () => {
-    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, role: 'staff' } })
+  it('shows the finance workspace, not the student invoice list, for finance staff', async () => {
+    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, role: 'finance_staff' } })
     mockFetchMyInvoices.mockResolvedValue([])
+    mockFetchSummaries.mockResolvedValue([])
+    mockFetchLedgerEntries.mockResolvedValue([])
 
     renderPage()
 
-    expect(await screen.findByText('Not built yet')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Finance workspace' })).toBeInTheDocument()
   })
 
   it('shows an empty state when there are no invoices', async () => {

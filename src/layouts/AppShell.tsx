@@ -4,6 +4,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   LogOut,
+  Megaphone,
   Menu,
   Settings,
   Users,
@@ -13,20 +14,37 @@ import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { useAuth } from '@/features/auth/AuthContext'
+import {
+  ACADEMIC_PAGE_ROLES,
+  ADMIN_ROLES,
+  FINANCE_PAGE_ROLES,
+  MARKETING_ROLES,
+  ROLE_LABELS,
+  ROLES,
+  STAFF_ROLES,
+  hasRole,
+} from '@/features/auth/roles'
+import type { Role } from '@/types/auth'
 
-const NAV_ITEMS = [
-  { to: '/', label: 'Overview', icon: LayoutDashboard, end: true },
-  { to: '/academic', label: 'Academic', icon: GraduationCap },
-  { to: '/finance', label: 'Finance & Marketing', icon: BarChart3 },
-  { to: '/people', label: 'People & Operations', icon: Users },
-  { to: '/status', label: 'System Status', icon: Building2 },
-  { to: '/settings', label: 'Settings', icon: Settings },
+// `roles` mirrors the route guards in app/router.tsx. Hiding a link is UX
+// only - the route guard and the API both re-check independently.
+const NAV_ITEMS: { to: string; label: string; icon: typeof LayoutDashboard; end?: boolean; roles: readonly Role[] }[] = [
+  { to: '/', label: 'Overview', icon: LayoutDashboard, end: true, roles: ROLES },
+  { to: '/academic', label: 'Academic', icon: GraduationCap, roles: ACADEMIC_PAGE_ROLES },
+  { to: '/finance', label: 'Finance', icon: BarChart3, roles: FINANCE_PAGE_ROLES },
+  { to: '/marketing', label: 'Marketing', icon: Megaphone, roles: MARKETING_ROLES },
+  { to: '/people', label: 'People & Operations', icon: Users, roles: STAFF_ROLES },
+  { to: '/status', label: 'System Status', icon: Building2, roles: ADMIN_ROLES },
+  { to: '/settings', label: 'Settings', icon: Settings, roles: ADMIN_ROLES },
 ]
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  const { principal } = useAuth()
+  const items = NAV_ITEMS.filter((item) => hasRole(principal?.role, item.roles))
+
   return (
     <nav className="flex flex-col gap-1" aria-label="Primary">
-      {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+      {items.map(({ to, label, icon: Icon, end }) => (
         <NavLink
           key={to}
           to={to}
@@ -46,8 +64,32 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
+function AccountPanel({ onLogout, showLabel = false }: { onLogout: () => void; showLabel?: boolean }) {
+  const { principal } = useAuth()
+
+  return (
+    <div className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2">
+      <div className="min-w-0">
+        <p className="truncate text-sm font-medium text-text">{principal?.fullName}</p>
+        <p className="truncate text-xs text-muted">
+          {principal?.role ? ROLE_LABELS[principal.role] : null}
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={onLogout}
+        className="flex shrink-0 items-center gap-2 rounded-md p-2 text-sm text-muted hover:bg-surface-elevated hover:text-text"
+        aria-label="Log out"
+      >
+        <LogOut className="size-4" aria-hidden="true" />
+        {showLabel ? <span>Log out</span> : null}
+      </button>
+    </div>
+  )
+}
+
 export function AppShell() {
-  const { principal, logout } = useAuth()
+  const { logout } = useAuth()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   return (
@@ -59,8 +101,13 @@ export function AppShell() {
         Skip to content
       </a>
 
-      <header className="flex h-14 items-center justify-between border-b border-border px-4 lg:hidden">
-        <span className="text-sm font-semibold tracking-tight text-text">ICT University ERP</span>
+      {/* z-30 keeps this under the mobile drawer (z-40) and the skip link
+          (z-50). bg-background is required or content shows through it. */}
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background px-4 lg:hidden">
+        <span className="flex items-center gap-2 text-sm font-semibold tracking-tight text-text">
+          <img src="/logo.png" alt="" className="size-6" />
+          ICT University ERP
+        </span>
         <button
           type="button"
           onClick={() => setMobileNavOpen(true)}
@@ -86,7 +133,18 @@ export function AppShell() {
                 <X className="size-5" aria-hidden="true" />
               </button>
             </div>
-            <NavLinks onNavigate={() => setMobileNavOpen(false)} />
+            {/* Scrolls independently so the account panel below stays reachable
+                on a short screen. */}
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              <NavLinks onNavigate={() => setMobileNavOpen(false)} />
+            </div>
+            <AccountPanel
+              showLabel
+              onLogout={() => {
+                setMobileNavOpen(false)
+                void logout()
+              }}
+            />
           </div>
         </div>
       ) : null}
@@ -94,25 +152,15 @@ export function AppShell() {
       <div className="mx-auto flex max-w-[1600px]">
         <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col justify-between border-r border-border p-4 lg:flex">
           <div>
-            <p className="px-3 text-xs font-medium uppercase tracking-[0.2em] text-muted">ICT University</p>
+            <div className="flex items-center gap-2 px-3">
+              <img src="/logo.png" alt="" className="size-6" />
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">ICT University</p>
+            </div>
             <div className="mt-6">
               <NavLinks />
             </div>
           </div>
-          <div className="flex items-center justify-between rounded-md border border-border px-3 py-2">
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-text">{principal?.fullName}</p>
-              <p className="truncate text-xs text-muted">{principal?.role}</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => void logout()}
-              className="rounded-md p-2 text-muted hover:bg-surface-elevated hover:text-text"
-              aria-label="Log out"
-            >
-              <LogOut className="size-4" aria-hidden="true" />
-            </button>
-          </div>
+          <AccountPanel onLogout={() => void logout()} />
         </aside>
 
         <main id="main-content" className="min-w-0 flex-1 px-4 py-8 lg:px-8">

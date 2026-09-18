@@ -52,7 +52,6 @@ const studentPrincipal = {
   fullName: 'Test Student',
   role: 'student' as const,
   institutionId: 'inst-1',
-  campusId: 'campus-1',
 }
 
 describe('EnrollmentPage', () => {
@@ -71,20 +70,13 @@ describe('EnrollmentPage', () => {
     mockFetchMyAtRiskStatus.mockResolvedValue([])
   })
 
-  it('shows a placeholder for non-student roles', async () => {
-    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, role: 'staff' } })
+  it('shows the teaching workspace, not the student enrollment form, for staff', async () => {
+    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, role: 'lecturer' } })
 
     renderPage()
 
-    expect(await screen.findByText('Not built yet')).toBeInTheDocument()
-  })
-
-  it('shows an error when the student has no campus assigned', async () => {
-    mockUseAuth.mockReturnValue({ principal: { ...studentPrincipal, campusId: null } })
-
-    renderPage()
-
-    expect(await screen.findByText('No campus assigned')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Teaching workspace' })).toBeInTheDocument()
+    expect(screen.queryByText('Enroll in a program')).not.toBeInTheDocument()
   })
 
   it('loads programs and terms and submits a new enrollment', async () => {
@@ -93,7 +85,6 @@ describe('EnrollmentPage', () => {
       id: 'enr-1',
       programId: 'prog-1',
       termId: 'term-1',
-      campusId: 'campus-1',
       studentId: 'student-1',
       status: 'accepted',
       createdAt: '2026-01-01T00:00:00Z',
@@ -109,7 +100,6 @@ describe('EnrollmentPage', () => {
       expect(mockCreateEnrollment).toHaveBeenCalledWith({
         programId: 'prog-1',
         termId: 'term-1',
-        campusId: 'campus-1',
       }),
     )
   })
@@ -120,7 +110,6 @@ describe('EnrollmentPage', () => {
         id: 'enr-2',
         programId: 'prog-1',
         termId: 'term-1',
-        campusId: 'campus-1',
         studentId: 'student-1',
         status: 'accepted',
         createdAt: '2026-01-01T00:00:00Z',

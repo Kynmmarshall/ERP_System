@@ -1,4 +1,4 @@
-export type Role = 'super_admin' | 'admin' | 'staff' | 'student'
+export type Role = 'admin' | 'lecturer' | 'finance_staff' | 'marketing' | 'student'
 
 export type Principal = {
   id: string
@@ -6,5 +6,4 @@ export type Principal = {
   fullName: string
   role: Role
   institutionId: string | null
-  campusId: string | null
 }

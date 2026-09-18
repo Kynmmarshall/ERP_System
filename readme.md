@@ -16,7 +16,7 @@ npm install
 npm run dev
 ```
 
-`npm run dev` proxies `/api/*` to `http://localhost:8081` (the backend
+`npm run dev` proxies `/api/*` to `http://localhost:2022` (the backend
 gateway), so requests made from the app are real, same-origin requests
 against the running services — see `vite.config.ts`.
 

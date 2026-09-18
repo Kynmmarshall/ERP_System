@@ -14,7 +14,7 @@ export default defineConfig({
       // Lets `npm run dev` make real requests to the gateway without CORS,
       // mirroring how the built app talks to it in Docker/production.
       '/api': {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:2022',
         changeOrigin: true,
       },
     },
@@ -24,6 +24,9 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    // tests/e2e are Playwright specs - vitest cannot run them and errors out
+    // if it collects them.
+    exclude: ['node_modules/**', 'dist/**', 'tests/e2e/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],

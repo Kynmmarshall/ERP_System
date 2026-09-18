@@ -4,7 +4,9 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { ErrorState } from '@/components/ui/ErrorState'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useAuth } from '@/features/auth/AuthContext'
+import { FINANCE_ROLES, hasRole } from '@/features/auth/roles'
 import { InvoiceRow } from '@/features/finance/InvoiceRow'
+import { StaffFinancePage } from '@/features/finance/staff/StaffFinancePage'
 import { fetchMyInvoices } from '@/services/financeService'
 
 export function FinancePage() {
@@ -13,19 +15,10 @@ export function FinancePage() {
 
   const invoicesQuery = useQuery({ queryKey: ['my-invoices'], queryFn: fetchMyInvoices })
 
-  if (principal?.role !== 'student') {
-    return (
-      <div>
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">Finance & Marketing</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-text">Finance & Marketing</h1>
-        <div className="mt-8">
-          <EmptyState
-            title="Not built yet"
-            message="Staff finance, expense, campaign and reporting screens land in a later development phase of this project."
-          />
-        </div>
-      </div>
-    )
+  // Checked positively: an unrecognised role must not fall through to the
+  // finance workspace.
+  if (hasRole(principal?.role, FINANCE_ROLES)) {
+    return <StaffFinancePage />
   }
 
   return (

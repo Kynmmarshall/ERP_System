@@ -7,6 +7,8 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { FormField } from '@/components/ui/FormField'
 import { Input } from '@/components/ui/Input'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { NoEmployeeProfile } from '@/features/hr/NoEmployeeProfile'
+import { isMissingEmployeeProfile } from '@/features/hr/missingEmployeeProfile'
 import { fetchMyLeaveRequests, submitLeaveRequest } from '@/services/hrService'
 import type { LeaveStatus } from '@/types/hr'
 
@@ -95,7 +97,9 @@ export function LeaveSection() {
       </div>
 
       <div className="mt-4">
-        {leaveQuery.isError ? (
+        {isMissingEmployeeProfile(leaveQuery.error) ? (
+          <NoEmployeeProfile what="leave requests" />
+        ) : leaveQuery.isError ? (
           <ErrorState message="Could not load your leave requests." />
         ) : leaveQuery.isPending ? (
           <Skeleton className="h-16 w-full" />

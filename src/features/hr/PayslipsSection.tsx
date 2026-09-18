@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ErrorState } from '@/components/ui/ErrorState'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { NoEmployeeProfile } from '@/features/hr/NoEmployeeProfile'
+import { isMissingEmployeeProfile } from '@/features/hr/missingEmployeeProfile'
 import { fetchMyPayslips } from '@/services/hrService'
 
 function formatXaf(amount: number): string {
@@ -16,7 +18,9 @@ export function PayslipsSection() {
     <div>
       <h2 className="text-lg font-semibold tracking-tight text-text">Payslips</h2>
       <div className="mt-3">
-        {payslipsQuery.isError ? (
+        {isMissingEmployeeProfile(payslipsQuery.error) ? (
+          <NoEmployeeProfile what="payslips" />
+        ) : payslipsQuery.isError ? (
           <ErrorState message="Could not load your payslips." />
         ) : payslipsQuery.isPending ? (
           <Skeleton className="h-16 w-full" />

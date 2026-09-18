@@ -7,19 +7,23 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { FormField } from '@/components/ui/FormField'
 import { Input } from '@/components/ui/Input'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { NoEmployeeProfile } from '@/features/hr/NoEmployeeProfile'
+import { QrScanner } from '@/features/hr/QrScanner'
+import { isMissingEmployeeProfile } from '@/features/hr/missingEmployeeProfile'
 import { checkIn, fetchMyAttendance } from '@/services/hrService'
 
 /** Accepts the QR code's underlying token as pasted/typed text rather than
- * requiring camera access - a QR scanner can be layered on top of this
- * same check-in call later, but a manual code-entry fallback must always
- * work for accessibility and devices without a camera. */
+ * requiring camera access - the camera scanner below fills the same field,
+ * and a manual code-entry fallback must always work for accessibility and
+ * devices without a camera. */
 function CheckInForm({ onCheckedIn }: { onCheckedIn: () => void }) {
   const [token, setToken] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [scanning, setScanning] = useState(false)
 
   const mutation = useMutation({
-    mutationFn: () => checkIn(token),
+    mutationFn: (value: string) => checkIn(value),
     onSuccess: () => {
       setToken('')
       setSuccess(true)
@@ -32,36 +36,63 @@ function CheckInForm({ onCheckedIn }: { onCheckedIn: () => void }) {
   })
 
   return (
-    <form
-      onSubmit={(event) => {
-        event.preventDefault()
-        setError(null)
-        mutation.mutate()
-      }}
-      className="flex flex-col gap-3 sm:flex-row sm:items-end"
-    >
-      <FormField label="Shift QR code / check-in code" htmlFor="attendance-token">
-        <Input
-          id="attendance-token"
-          value={token}
-          onChange={(event) => {
-            setToken(event.target.value)
-            setSuccess(false)
+    <div>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          setError(null)
+          mutation.mutate(token)
+        }}
+        className="flex flex-col gap-3 sm:flex-row sm:items-end"
+      >
+        <FormField label="Shift QR code / check-in code" htmlFor="attendance-token">
+          <Input
+            id="attendance-token"
+            value={token}
+            onChange={(event) => {
+              setToken(event.target.value)
+              setSuccess(false)
+            }}
+            placeholder="Paste or scan the shift code"
+            required
+          />
+        </FormField>
+        <Button type="submit" size="sm" isLoading={mutation.isPending}>
+          Check in
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="secondary"
+          onClick={() => {
+            setError(null)
+            setScanning((open) => !open)
           }}
-          placeholder="Paste or scan the shift code"
-          required
+        >
+          {scanning ? 'Close scanner' : 'Scan QR code'}
+        </Button>
+        {error ? (
+          <p role="alert" className="text-xs text-error">
+            {error}
+          </p>
+        ) : null}
+        {success ? <p className="text-xs text-success">Checked in.</p> : null}
+      </form>
+
+      {scanning ? (
+        <QrScanner
+          onClose={() => setScanning(false)}
+          onScan={(scanned) => {
+            // Submitted straight away: making the user press Check in after a
+            // successful scan just adds a step where the code can expire.
+            setScanning(false)
+            setToken(scanned)
+            setError(null)
+            mutation.mutate(scanned)
+          }}
         />
-      </FormField>
-      <Button type="submit" size="sm" isLoading={mutation.isPending}>
-        Check in
-      </Button>
-      {error ? (
-        <p role="alert" className="text-xs text-error">
-          {error}
-        </p>
       ) : null}
-      {success ? <p className="text-xs text-success">Checked in.</p> : null}
-    </form>
+    </div>
   )
 }
 
@@ -77,7 +108,9 @@ export function AttendanceSection() {
       </div>
 
       <div className="mt-4">
-        {attendanceQuery.isError ? (
+        {isMissingEmployeeProfile(attendanceQuery.error) ? (
+          <NoEmployeeProfile what="check-ins" />
+        ) : attendanceQuery.isError ? (
           <ErrorState message="Could not load your attendance history." />
         ) : attendanceQuery.isPending ? (
           <Skeleton className="h-16 w-full" />

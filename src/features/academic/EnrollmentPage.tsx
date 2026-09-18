@@ -10,7 +10,9 @@ import { ErrorState } from '@/components/ui/ErrorState'
 import { FormField } from '@/components/ui/FormField'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useAuth } from '@/features/auth/AuthContext'
+import { TEACHING_ROLES, hasRole } from '@/features/auth/roles'
 import { CoursesPanel } from '@/features/academic/CoursesPanel'
+import { StaffAcademicPage } from '@/features/academic/staff/StaffAcademicPage'
 import {
   createEnrollment,
   fetchEnrollments,
@@ -122,7 +124,6 @@ export function EnrollmentPage() {
       createEnrollment({
         programId: values.programId,
         termId: values.termId,
-        campusId: principal!.campusId!,
       }),
     onSuccess: async (enrollment) => {
       setJustCreatedId(enrollment.id)
@@ -140,34 +141,10 @@ export function EnrollmentPage() {
     }
   })
 
-  if (principal?.role !== 'student') {
-    return (
-      <div>
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">Academic</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-text">Academic</h1>
-        <div className="mt-8">
-          <EmptyState
-            title="Not built yet"
-            message="Staff enrollment management lands in a later development phase of this project."
-          />
-        </div>
-      </div>
-    )
-  }
-
-  if (!principal.campusId) {
-    return (
-      <div>
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">Academic</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-text">Academic</h1>
-        <div className="mt-8">
-          <ErrorState
-            title="No campus assigned"
-            message="Your account has no campus assigned, so you cannot enroll. Contact an administrator."
-          />
-        </div>
-      </div>
-    )
+  // Checked positively: an unrecognised role must not fall through to the
+  // teaching workspace.
+  if (hasRole(principal?.role, TEACHING_ROLES)) {
+    return <StaffAcademicPage />
   }
 
   const programsById = new Map((programsQuery.data ?? []).map((program) => [program.id, program]))
